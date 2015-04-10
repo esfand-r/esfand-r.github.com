@@ -15,7 +15,7 @@ A couple of days ago I came across an article titled [“Choose Boring Technolog
 ## McKinley Paradigm of Boredom
 In his article, McKinley argues that a software engineer’s “function in a nutshell is to map business problems onto a solution space that involves choices of software” and argues that best tool for the job will inevitably lead to a mess. The thesis makes the assumptions that choosing from very well-known technologies correlates with easier/cheaper maintenance in the future, so we should naturally be biased towards them. 
 
-McKinley offers a sort of answer to the ‘best tool for the job’ approach, by substituting global tool optimization, conceptualized as choosing the single stack which least poorly addresses the whole of the business’s global processes. Another implicit presumption: classic technologies are more likely to perform across the breadth of processes demanded by the business’s project(s) globally.
+McKinley offers a sort of answer to the ‘best tool for the job’ approach, by substituting global tool optimization, conceptualized as choosing the single stack which least poorly addresses the whole of the business’s global processes. Another implicit presumption in his article is that classic technologies are more likely to perform across the breadth of processes demanded by the business’s project(s) globally.
 
 Further on, the article talks about boredom as something to be embraced - which I have a feeling comes from facing a rebellious team who is struggling to have fun with the current stack.
 
