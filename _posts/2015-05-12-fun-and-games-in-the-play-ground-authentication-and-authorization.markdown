@@ -81,10 +81,10 @@ we could do
 
 And we can build our object graph in Global settings before starting the application.
 
-  public void beforeStart(Application app) {
-      super.beforeStart(app);
-      objectGraph = ObjectGraph.create(new ProductionModule());
-  }
+  	public void beforeStart(Application app) {
+      	super.beforeStart(app);
+      	objectGraph = ObjectGraph.create(new ProductionModule());
+  	}
 
 Everything should be working the same as before... 
 
