@@ -27,18 +27,18 @@ I decided to start with Play Authenticate and my starting point was a [great exa
 Whether it was a god given destiny or a pure joy to appreciate contradictions of a polyglot world, I coudn’t stay away from it. I have been a lot more keen on Scala especially after picking up the great book of Debasish Ghosh [DSLs in Action](http://www.amazon.ca/DSLs-Action-Debasish-Ghosh/dp/1935182455/ref=sr_1_1?ie=UTF8&qid=1431472859&sr=8-1&keywords=dsl+in+action) , who also writes the fantastic blog  [Ruminations of a Programmer](http://debasishg.blogspot.ca/). So I’m definitely planning to learn it better and use it more widely and have started playing around with an idea of [a DSL](https://github.com/esfand-r/appdirect-client-dsl). 
 
 Play Authenticate easily works with Deadbolt 2, which gives you the ability to add authorization capabilities to a project and works well with both Java and Scala. It also seemed easy to - Configurable templates - Page and email templates were easily are configurable. You don't need to change the module code to achieve that. 
-	- Have multi language - We can even localize email templates.
-	- Have multi account support - This allows connection of many providers into one user account - For example a user can login using Github, Google and Twitter  and join them as one person 
+	- Have multi language: We can even localize email templates.
+	- Have multi account support: This allows connection of many providers into one user account - For example a user can login using Github, Google and Twitter  and join them as one person 
 
 Overall, it is very easily customizable and we can easily hook up our own stuff and use our own [user services](https://github.com/esfand-r/Play2.3-Spring-PlayAuthenticate-deadbolt2-and-mongo-with-morphia/tree/master/modules/usermanagement/src/main/java/com/mycane/usermanagement). Out of the box, it supports major methods such as Basic Auth, Email/Pass, OpenID, Github, Google, Twitter, Facebook, etc and it is straightforward to add and plug in a new ones.
 
 ## [The Sample](https://www.typesafe.com/activator/template/Play2.3-Spring-PlayAuthenticate-deadbolt2-and-mongo-with-morphia)
 The developed [sample](https://github.com/esfand-r/Play2.3-Spring-PlayAuthenticate-deadbolt2-and-mongo-with-morphia) which is deployed on my [Rackspace ubuntu server](http://www.mycane.io) is a multi module play project made of:
 	- common
-	- securitycommon - This module was created since some of the core entities used in authentication needed to be shared across the modules.
-	- notification - Contains email services and deals with sending notifications and only emails at this point.
-	- usermanagement - Contains all the necessary user and account services.
-	- web - Contains controllers and all the front end elements of the webapp.
+	- securitycommon: This module was created since some of the core entities used in authentication needed to be shared across the modules.
+	- notification: Contains email services and deals with sending notifications and only emails at this point.
+	- usermanagement: Contains all the necessary user and account services.
+	- web: Contains controllers and all the front end elements of the webapp.
 
 Notification and web are play applications and the rest are simple libraries. Notification is kept as a Play app since it uses some of the templating capabilities of play to generate email content dynamically based on the [notification type](https://github.com/esfand-r/Play2.3-Spring-PlayAuthenticate-deadbolt2-and-mongo-with-morphia/tree/master/modules/notification/app/com/mycane/notification/template). But I'm going to change that to have one Play App using a bunch of libraries soon. All these modules at the end get aggregated and build the [final webapp](https://github.com/esfand-r/Play2.3-Spring-PlayAuthenticate-deadbolt2-and-mongo-with-morphia/blob/master/build.sbt)
 
@@ -112,4 +112,3 @@ I would like to try and implement the same app using other DI frameworks and alt
 Also providing alternative implementation using ReactiveMongo is at works.
 
 This all will be continued in a serie of upcoming articles ...
-
