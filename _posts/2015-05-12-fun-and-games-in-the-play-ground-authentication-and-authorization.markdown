@@ -32,7 +32,7 @@ Play Authenticate easily works with Deadbolt 2, which gives you the ability to a
 
 Overall, it is very easily customizable and we can easily hook up our own stuff and use our own [user services](https://github.com/esfand-r/Play2.3-Spring-PlayAuthenticate-deadbolt2-and-mongo-with-morphia/tree/master/modules/usermanagement/src/main/java/com/mycane/usermanagement). Out of the box, it supports major methods such as Basic Auth, Email/Pass, OpenID, Github, Google, Twitter, Facebook, etc and it is straightforward to add and plug in a new ones.
 
-## The Sample
+## [The Sample](https://www.typesafe.com/activator/template/Play2.3-Spring-PlayAuthenticate-deadbolt2-and-mongo-with-morphia)
 The developed [sample](https://github.com/esfand-r/Play2.3-Spring-PlayAuthenticate-deadbolt2-and-mongo-with-morphia) which is deployed on my [Rackspace ubuntu server](http://www.mycane.io) is a multi module play project made of:
 - common
 - securitycommon - This module was created since some of the core entities used in authentication needed to be shared across the modules.
