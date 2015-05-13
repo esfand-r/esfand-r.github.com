@@ -53,31 +53,31 @@ I'm going to provide alternative implementation using Dagger, and it will be qui
 
 For implementation using Dagger, inside the Instead of checking for Spring annotation [global](https://github.com/esfand-r/Play2.3-Spring-PlayAuthenticate-deadbolt2-and-mongo-with-morphia/blob/master/app/WebGlobal.java), we can do
 
- @Override
- public <A> A getControllerInstance(Class<A> controllerClass) throws Exception {
+ 	@Override
+ 	public <A> A getControllerInstance(Class<A> controllerClass) throws Exception {
         return objectGraph.get(controllerClass);
- }
+ 	}
 
 Only thing left here is to change [configuration](https://github.com/esfand-r/Play2.3-Spring-PlayAuthenticate-deadbolt2-and-mongo-with-morphia/blob/master/modules/usermanagement/src/main/java/com/mycane/usermanagement/DBConfig.java)
 
 So for example instead of using 
 
-@Configuration
-public class DBConfig {
-  @Bean
-  Morphia morphia() {
-     return new Morphia();
-  }
-}
+	@Configuration
+	public class DBConfig {
+	  	@Bean
+	  	Morphia morphia() {
+	     return new Morphia();
+	  	}
+	}
 
 we could do
 
-@Module
-class DBConfig {
-  @Provides Morphia morphia() {
-    return new Morphia();
-  }
-}
+	@Module
+	class DBConfig {
+  		@Provides Morphia morphia() {
+    		return new Morphia();
+  		}
+	}
 
 And we can build our object graph in Global settings before starting the application.
 
