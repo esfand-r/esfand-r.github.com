@@ -29,7 +29,7 @@ Whether it was a god given destiny or a pure joy to appreciate contradictions of
 Play Authenticate easily works with Deadbolt 2, which gives you the ability to add authorization capabilities to a project and works well with both Java and Scala. It also seemed easy to - Configurable templates - Page and email templates were easily are configurable. You don't need to change the module code to achieve that. 
 
 - Have multi language: We can even localize email templates.
-- Have multi account support: This allows connection of many providers into one user account - For example a user can login using Github, Google and Twitter  and join them as one person 
+- Have multi account support: This allows connection of many providers into one user account. For example a user can login using Github, Google and Twitter and join them as one person 
 
 Overall, it is very easily customizable and we can easily hook up our own stuff and use our own [user services](https://github.com/esfand-r/Play2.3-Spring-PlayAuthenticate-deadbolt2-and-mongo-with-morphia/tree/master/modules/usermanagement/src/main/java/com/mycane/usermanagement). Out of the box, it supports major methods such as Basic Auth, Email/Pass, OpenID, Github, Google, Twitter, Facebook, etc and it is straightforward to add and plug in a new ones.
 
