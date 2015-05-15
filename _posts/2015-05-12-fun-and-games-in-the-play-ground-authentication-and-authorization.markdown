@@ -17,6 +17,7 @@ share: true
 ---
 
 
+
 It’s been awhile I’ve wanted to have some fun with Play framework and get my hands dirty with technologies that live in or work with its ecosystem. In this article I’m going to tell the story of a small activator template I developed to learn and have fun during the process.
 
 There are a few frameworks to help us with authentication in Play applications.  Usually a decent framework offers customizable abstractions over OAuth1, OAuth2, OpenID, Credentials, Basic Authentication, Two Factor Authentication or custom authentication schemes. [SecureSocial](http://securesocial.ws/), which has been available the longest, [Play Silhouette](https://github.com/mohiva/play-silhouette) and [Play Authenticate](http://joscha.github.io/play-authenticate/) all look like very capable frameworks for my story.
@@ -32,7 +33,7 @@ Play Authenticate easily works with Deadbolt2, which gives you the ability to ad
 - Have multi language: We can even localize email templates.
 - Have multi account support: This allows connection of many providers into one user account. For example a user can login using Github, Google and Twitter and join them as one person 
 
-Overall, it is very easily customizable and we can easily hook up our own stuff and use our own [user services](https://github.com/esfand-r/Play2.3-Spring-PlayAuthenticate-deadbolt2-and-mongo-with-morphia/tree/master/modules/usermanagement/src/main/java/com/mycane/usermanagement). Out of the box, it supports major methods such as Basic Auth, Email/Pass, OpenID, Github, Google, Twitter, Facebook, etc and it is straightforward to add and plug in a new ones.
+Overall, it is very easily customizable and we can easily hook up our own stuff and use our own [user services](https://github.com/esfand-r/Play2.3-Spring-PlayAuthenticate-deadbolt2-and-mongo-with-morphia/tree/master/modules/usermanagement/src/main/java/com/mycane/usermanagement). Out of the box, it supports major methods such as Basic Auth, Email/Pass, OpenID, Github, Google, Twitter, Facebook, etc and it is straightforward to add and plug in a new one.
 
 ## [The Sample](https://www.typesafe.com/activator/template/Play2.3-Spring-PlayAuthenticate-deadbolt2-and-mongo-with-morphia)
 The developed [sample](https://github.com/esfand-r/Play2.3-Spring-PlayAuthenticate-deadbolt2-and-mongo-with-morphia) which is deployed on my [Rackspace ubuntu server](http://www.mycane.io) is a multi module play project made of:
@@ -52,9 +53,9 @@ However, I kept using JSR-330 since it is a standard spec, and it’s supported 
 
 Dagger is super cool. It doesn’t really have any [dependency to anything](http://search.maven.org/#artifactdetails%7Ccom.squareup%7Cdagger%7C0.9.1%7Cjar) and it’s only 60 KB. This makes it a lot smaller than 694 KB of Guice, which interestingly has some light dependencies to [spring libraries](http://search.maven.org/#artifactdetails%7Ccom.google.inject%7Cguice%7C4.0%7Cjar), and a lot smaller than 1003 KB of spring-context.
 
-Here is [an example](https://www.typesafe.com/activator/template/play-java-dagger-dependency-injection) of using Dagger for Dependency Injection in Playframework. 
+Here is [an sample I created](https://www.typesafe.com/activator/template/play-java-dagger-dependency-injection) using Dagger for Dependency Injection in Playframework. 
 
-For implementation using Dagger, inside the Instead of checking for Spring annotation [global](https://github.com/esfand-r/Play2.3-Spring-PlayAuthenticate-deadbolt2-and-mongo-with-morphia/blob/master/app/WebGlobal.java), we can do
+For implementation using Dagger, instead of checking for Spring annotation [global](https://github.com/esfand-r/Play2.3-Spring-PlayAuthenticate-deadbolt2-and-mongo-with-morphia/blob/master/app/WebGlobal.java), we can do
 
  	@Override
  	public <A> A getControllerInstance(Class<A> controllerClass) throws Exception {
