@@ -16,6 +16,7 @@ comments: true
 share: true
 ---
 
+
 It’s been awhile I’ve wanted to have some fun with Play framework and get my hands dirty with technologies that live in or work with its ecosystem. In this article I’m going to tell the story of a small activator template I developed to learn and have fun during the process.
 
 There are a few frameworks to help us with authentication in Play applications.  Usually a decent framework offers customizable abstractions over OAuth1, OAuth2, OpenID, Credentials, Basic Authentication, Two Factor Authentication or custom authentication schemes. [SecureSocial](http://securesocial.ws/), which has been available the longest, [Play Silhouette](https://github.com/mohiva/play-silhouette) and [Play Authenticate](http://joscha.github.io/play-authenticate/) all look like very capable frameworks for my story.
@@ -26,7 +27,7 @@ I decided to start with Play Authenticate and my starting point was a [great exa
 
 Whether it was a god given destiny or a pure joy to appreciate contradictions of a polyglot world, I coudn’t stay away from it. I have been a lot more keen on Scala especially after picking up the great book of Debasish Ghosh [DSLs in Action](http://www.amazon.ca/DSLs-Action-Debasish-Ghosh/dp/1935182455/ref=sr_1_1?ie=UTF8&qid=1431472859&sr=8-1&keywords=dsl+in+action) , who also writes the fantastic blog  [Ruminations of a Programmer](http://debasishg.blogspot.ca/). So I’m definitely planning to learn it better and use it more widely and have started playing around with an idea of [a DSL](https://github.com/esfand-r/appdirect-client-dsl). 
 
-Play Authenticate easily works with Deadbolt 2, which gives you the ability to add authorization capabilities to a project and works well with both Java and Scala. It also seemed easy to - Configurable templates - Page and email templates were easily are configurable. You don't need to change the module code to achieve that. 
+Play Authenticate easily works with Deadbolt2, which gives you the ability to add authorization capabilities to a project and works well with both Java and Scala. It also seemed easy to - Configurable templates - Page and email templates were easily are configurable. You don't need to change the module code to achieve that. 
 
 - Have multi language: We can even localize email templates.
 - Have multi account support: This allows connection of many providers into one user account. For example a user can login using Github, Google and Twitter and join them as one person 
@@ -51,7 +52,7 @@ However, I kept using JSR-330 since it is a standard spec, and it’s supported 
 
 Dagger is super cool. It doesn’t really have any [dependency to anything](http://search.maven.org/#artifactdetails%7Ccom.squareup%7Cdagger%7C0.9.1%7Cjar) and it’s only 60 KB. This makes it a lot smaller than 694 KB of Guice, which interestingly has some light dependencies to [spring libraries](http://search.maven.org/#artifactdetails%7Ccom.google.inject%7Cguice%7C4.0%7Cjar), and a lot smaller than 1003 KB of spring-context.
 
-I'm going to provide alternative implementation using Dagger, and it will be quite easy to switch the dependency injection mechanism. 
+Here is [an example](https://www.typesafe.com/activator/template/play-java-dagger-dependency-injection) of using Dagger for Dependency Injection in Playframework. 
 
 For implementation using Dagger, inside the Instead of checking for Spring annotation [global](https://github.com/esfand-r/Play2.3-Spring-PlayAuthenticate-deadbolt2-and-mongo-with-morphia/blob/master/app/WebGlobal.java), we can do
 
@@ -107,9 +108,8 @@ This is where I decided not to go Java at all but keep using spring-test. Java s
 
 [Flapdoodle](https://github.com/flapdoodle-oss/de.flapdoodle.embed.mongo) is and will be used in tests, so they won’t depend on a running instance of MongoDB.
 
-
 ### What’s next
-I would like to try and implement the same app using other DI frameworks and alternative authentication libraries, a test to find my ‘go to’ for writing future Play applications. Replacing the front-end with a single page app will be done also, even though making templates with Play are handy and pretty amazing. 
+I would like to try and implement the same app using other alternative authentication libraries, a test to find my ‘go to’ for writing future Play applications. Replacing the front-end with a single page app will be done also, even though making templates with Play are handy and pretty amazing. 
 
 Also providing alternative implementation using ReactiveMongo is at works.
 
