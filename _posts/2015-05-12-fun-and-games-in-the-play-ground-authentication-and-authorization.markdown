@@ -53,7 +53,7 @@ However, I kept using JSR-330 since it is a standard spec, and it’s supported 
 
 Dagger is super cool. It doesn’t really have any [dependency to anything](http://search.maven.org/#artifactdetails%7Ccom.squareup%7Cdagger%7C0.9.1%7Cjar) and it’s only 60 KB. This makes it a lot smaller than 694 KB of Guice, which interestingly has some light dependencies to [spring libraries](http://search.maven.org/#artifactdetails%7Ccom.google.inject%7Cguice%7C4.0%7Cjar), and a lot smaller than 1003 KB of spring-context.
 
-Here is [an sample I created](https://www.typesafe.com/activator/template/play-java-dagger-dependency-injection) using Dagger for Dependency Injection in Playframework. 
+Here is [a sample I created](https://www.typesafe.com/activator/template/play-java-dagger-dependency-injection) using Dagger for Dependency Injection in Playframework. 
 
 For implementation using Dagger, instead of checking for Spring annotation [global](https://github.com/esfand-r/Play2.3-Spring-PlayAuthenticate-deadbolt2-and-mongo-with-morphia/blob/master/app/WebGlobal.java), we can do
 
