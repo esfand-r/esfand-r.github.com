@@ -14,7 +14,7 @@ share: true
 ---
 
 
-This is the republished version of the great article written by Anriy [Redko](http://aredko.blogspot.com/2015/08/divided-we-win-event-sourcing-cqrs.html).
+This is the republished version of the great article written by [Andriy Redko](http://aredko.blogspot.com/2015/08/divided-we-win-event-sourcing-cqrs.html).
 
 In today's post we are going to unveil some very interesting (in my opinion) architecture styles: [event sourcing](http://martinfowler.com/eaaDev/EventSourcing.html) and [command query responsibility segregation](http://martinfowler.com/bliki/CQRS.html) (**CQRS**). Essentially, in both of them events are in the heart of the system design and reflect any changes of the state which are happening. It is quite different from the traditional [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) architecture where usually only the last known state is kept, with any historical background effectively lost.
 
