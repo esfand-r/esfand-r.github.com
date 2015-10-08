@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Linguistic Nightmare
+title: Survival Through Language
 published: true
 categories: articles
 tags: 
