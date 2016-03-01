@@ -1,3 +1,17 @@
+---
+layout: post
+title: Paralysis In Analysis
+excerpt: Paralysis In Analysis
+categories: articles
+tags:
+  - Agile
+  - "Software Development"
+author: esfandiar_amirrahimi
+comments: true
+share: true
+published: true
+---
+
 After graduating about two years ago, I came to know more about the software industry and read about its all time high focus on processes and metrics as a way to ensure code quality. It is understandable, millions and billions of code has been and is being written. The software industry suffers from a miserable failure rate and there are millions of dollars at stake. Scrum seems to be the winner of the agile method wars. It is the Kool­kid on the block that everybody wants to adopt. So I was really surprised to find it in a list of the Worst Technologies of the Decade. It makes it easier to know you are not the only one suspicious about this rather bizarre aspect of software development.
 I like many of the agile principles. But they are just basic common sense and don’t need a holy text­book or evangelists to support them. Good teams talk to each other. They take unit testing, design documents and code reviews seriously. There are of course strict rules and guidelines governing the ecosystem preventing engineers and teams from doing things their own way. Some evangelists talk about the cross­functional team like it is such a discovery! Isn't it just natural for designers, artists and engineers working together since the early human civilizations? And really, what's up with the silly names and unnecessary regimented timetable?
 There is a thin line here, too much process can turn the filling dish of a creative job into chartered accountancy with a side of prison. Sometimes it will even demoralize the most passionate geek. Unless it somehow becomes truly agile, it will continue drag everybody down into a mess of meetings and metrics­gaming[1]. Too much process makes it very easy to lose common sense and cloud reasoning in the bulk of unimportant details, like paddling hard but getting stuck behind the first wave. Developers can end up spending days generating stories and tasks. They can spend hours on grooming stories before each sprint and hours on tracking time to generate burn­down charts for management. If Agile was supposed to be lightweight, then what is this heavy bureaucracy doing in my life? Product backlog, sprint backlog, product burndown chart, sprint burndown chart, daily meeting, retrospective, sprint planning, crap throwing... is this really necessary? It is more likely to spend time on process, and less on actually coding the applications. My colleague once said the ratio is 80% these days. 80% doing errands and 20% actual coding. 20% of their time they spend coding and there is expectation that they will be good and fast software developers?! Without practice? And the team is expected to have a winning software, but without continuous and opportunistic refactoring and incremental design? They would quickly dig themselves a massive hole of technical debt.
