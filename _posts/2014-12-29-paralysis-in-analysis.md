@@ -14,6 +14,7 @@ published: true
 ---
 
 
+
 After graduating about two years ago, I came to know more about the software industry and read about its all time high focus on processes and metrics as a way to ensure code quality. It is understandable, millions and billions of lines of code has been and is being written. The software industry suffers from a miserable failure rate and there are millions of dollars at stake. Scrum seems to be the winner of the agile method wars. It is the Kool-kid on the block that everybody wants to adopt. So I was really surprised to find it in a list of the Worst Technologies of the Decade. It makes it easier to know you are not the only one suspicious about this rather bizarre aspect of software development.
 
 I like many of the agile principles. But they are just basic common sense and don’t need a holy text-book or evangelists to support them. Good teams talk to each other. They take unit testing, design documents and code reviews seriously. There are of course strict rules and guidelines governing the ecosystem preventing engineers and teams from doing things their own way. Some evangelists talk about the cross-functional team like it is such a discovery! Isn't it just natural for designers, artists and engineers working together since the early human civilizations? And really, what's up with the silly names and useless regimented timetables?
