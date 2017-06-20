@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+
+    <title>@esfandiar’s Divine Comedy of a Software Engineer - Tags</title>
+    <link>https://esfand-r.github.io/esfand-r.github.com/tags/</link>
+    <description>All entries in Tags on Divine Comedy of a Software Engineer</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+    
+    <atom:link href="/esfand-r.github.com/tags/" rel="self" type="application/rss+xml" />
+    
+  </channel>
+</rss>

@@ -1,31 +1,390 @@
----
-layout: default
----
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Esfandiar Amirrahimi">
+    <meta name="description" content="I hope you find this interesting.">
+    <meta name="generator" content="Hugo 0.23" />
 
-{% for post in paginator.posts %}
-<div class="article">
-    <div class="well">
-        <h1><a href="{{ site.baseurl}}{{ post.url }}">{{ post.date | date: "%b %-d, %Y" }} - {{ post.title }}</a></h1>
-        {% if site.comments == true and post.comments == true and site.disqus != '' %}
-          <p class="author"><a href="{{ site.baseurl }}{{ post.url }}/#disqus_thread">Comments</a></p>
-        {% endif %}
-        <div class="content">
-            {{ post.content }}
-        </div>
+    
+    <title>@esfandiar’s Divine Comedy of a Software Engineer</title>
+
+    <link rel="stylesheet" href="https://esfand-r.github.io/esfand-r.github.com/css/weblog.css" media="screen" charset="utf-8" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.2.14/css/lightgallery.min.css" type="text/css" />
+    
+
+
+    
+	<link href="https://esfand-r.github.io/esfand-r.github.com/index.xml" rel="alternate" type="application/rss+xml" title="Divine Comedy of a Software Engineer" />
+	
+  </head>
+  <body class="site">
+
+<header>
+  <nav>
+    <h1><a href="/">@esfandiar</a>’s Divine Comedy of a Software Engineer.</h1>
+    <div class="menu">
+      
+      <ul>
+        
+            <li>
+              <a href="/esfand-r.github.com/posts/">Posts</a>
+              
+                <a href="/esfand-r.github.com/posts/index.xml"><img src="/img/rss.svg" class="rss-icon" /></a>
+              
+            </li>
+        
+            <li>
+              <a href="/esfand-r.github.com/microposts/">Microposts</a>
+              
+                <a href="/esfand-r.github.com/microposts/index.xml"><img src="/img/rss.svg" class="rss-icon" /></a>
+              
+            </li>
+        
+            <li>
+              <a href="/esfand-r.github.com/photos/">Photos</a>
+              
+            </li>
+        
+        <li><a href="/about">About</a></li>
+      </ul>
     </div>
-</div>
-{% endfor %}
+  </nav>
+</header>
+
+
+  <main class="content">
+    
+
+  
+
+  
+
+  
+
+  
+    <article class="post">
+  
+    <h2><a rel="full-article" href="https://esfand-r.github.io/esfand-r.github.com/posts/binary-coupling/">Binary Coupling</a></h2>
+  
+
+  <div class="postmeta">Posted on <time datetime="2016-10-18 10:59:11 -0400 EDT" pubdate="">October 18, 2016</time>
+    
+  </div>
+
+  <p>
+    
+      Background So my goal today is to try and give an argument for reducing the amount of shared code and limiting or eliminating the coupling of the systems with binary dependencies. The punchlines of this text are shamelessly plagiarized from the fantastic talk given by Ben Christensen titled &ldquo;Don&rsquo;t Build a Distributed Monolith&rdquo; that can help putting some developers’ personal observations into context.
+The punchline of this argument is about shared libraries and network clients.
+    
+  </p>
+
+  
+    
+      <a class="continue" rel="full-article" href="https://esfand-r.github.io/esfand-r.github.com/posts/binary-coupling/">Continue Reading »</a>
+    
+  
+</article>
+
+  
+
+
+  
+
+  
+
+  
+
+  
+    <article class="post">
+  
+    <h2><a rel="full-article" href="https://esfand-r.github.io/esfand-r.github.com/posts/from-hilbert-with-love/">from hilbert with love</a></h2>
+  
+
+  <div class="postmeta">Posted on <time datetime="2016-10-18 10:59:11 -0400 EDT" pubdate="">October 18, 2016</time>
+    
+  </div>
+
+  <p>
+    
+      Having taken Functional Programming with Scala presented by Martin Odersky, I have found the idea behind it rather difficult to understand and very amusing at the same time. Coming from an imperative world, everything looks quite bizarre at the moment. In the past few weeks, I kept wondering: What is the reason for this recent comeback of functional programming? May the history of great men who created our universe shed some light on my confusion&hellip;
+    
+  </p>
+
+  
+    
+      <a class="continue" rel="full-article" href="https://esfand-r.github.io/esfand-r.github.com/posts/from-hilbert-with-love/">Continue Reading »</a>
+    
+  
+</article>
+
+  
+
+
+  
+
+  
+    <article class="micropost">
+  <p><a href="https://docs.google.com/document/d/1g5MgNG91KUrjVTM0_VA3zgn9aNm7npMbISSUlYKfOro/pub">Reactive Manifesto in Farsi</a></p>
+
+  <a href='https://esfand-r.github.io/esfand-r.github.com/microposts/reactive-manifesto-in-farsi/'><aside class="dates">→ 2016/10/18 10:55 AM</aside></a>
+</article>
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+    <article class="post">
+  
+    <h2><a rel="full-article" href="https://esfand-r.github.io/esfand-r.github.com/posts/paralysis-in-analysis/">paralysis in analysis</a></h2>
+  
+
+  <div class="postmeta">Posted on <time datetime="2016-10-18 10:50:36 -0400 EDT" pubdate="">October 18, 2016</time>
+    
+  </div>
+
+  <p>
+    
+      After graduating about two years ago, I came to know more about the software industry and read about its all time high focus on processes and metrics as a way to ensure code quality. It is understandable, millions and billions of code has been and is being written. The software industry suffers from a miserable failure rate and there are millions of dollars at stake. Scrum seems to be the winner of the agile method wars.
+    
+  </p>
+
+  
+    
+      <a class="continue" rel="full-article" href="https://esfand-r.github.io/esfand-r.github.com/posts/paralysis-in-analysis/">Continue Reading »</a>
+    
+  
+</article>
+
+  
+
+
+  
+
+  
+
+  
+
+  
+    <article class="post">
+  
+    <h2><a rel="full-article" href="https://esfand-r.github.io/esfand-r.github.com/posts/art-of-documentation-and-communication-the-most-talked-about-and-the-most-forgotten/">art of documentation and communication the most talked about and the most forgotten</a></h2>
+  
+
+  <div class="postmeta">Posted on <time datetime="2016-10-18 10:49:37 -0400 EDT" pubdate="">October 18, 2016</time>
+    
+  </div>
+
+  <p>
+    
+      Let’s face the truth, hard-core geeks can often have trouble in communicating their thoughts and ideas. Good software craftsman who can communicate effectively are indeed a rarity. You quickly observe this as soon as you start punching in code at your very first desk right after school. A “battle-worn veteran” such as Oracle’s Eric Lowe has written about this topic over and over. There is no China Wall between failed and successful projects, there is a thin line which is only defended by effective dissemination of key information amongst engineers.
+    
+  </p>
+
+  
+    
+      <a class="continue" rel="full-article" href="https://esfand-r.github.io/esfand-r.github.com/posts/art-of-documentation-and-communication-the-most-talked-about-and-the-most-forgotten/">Continue Reading »</a>
+    
+  
+</article>
+
+  
+
+
+  
+
+  
+
+  
+
+  
+    <article class="post">
+  
+    <h2><a rel="full-article" href="https://esfand-r.github.io/esfand-r.github.com/posts/divided-we-win/">divided we win</a></h2>
+  
+
+  <div class="postmeta">Posted on <time datetime="2016-10-18 10:48:47 -0400 EDT" pubdate="">October 18, 2016</time>
+    
+  </div>
+
+  <p>
+    
+      This is the republished version of the great article written by Andriy Redko.
+In today&rsquo;s post we are going to unveil some very interesting (in my opinion) architecture styles: event sourcing and command query responsibility segregation (CQRS). Essentially, in both of them events are in the heart of the system design and reflect any changes of the state which are happening. It is quite different from the traditional CRUD architecture where usually only the last known state is kept, with any historical background effectively lost.
+    
+  </p>
+
+  
+    
+      <a class="continue" rel="full-article" href="https://esfand-r.github.io/esfand-r.github.com/posts/divided-we-win/">Continue Reading »</a>
+    
+  
+</article>
+
+  
+
+
+  
+
+  
+
+  
+
+  
+    <article class="post">
+  
+    <h2><a rel="full-article" href="https://esfand-r.github.io/esfand-r.github.com/posts/dont-choose-boring-technology/">dont choose boring technology</a></h2>
+  
+
+  <div class="postmeta">Posted on <time datetime="2016-10-18 10:47:37 -0400 EDT" pubdate="">October 18, 2016</time>
+    
+  </div>
+
+  <p>
+    
+      A couple of days ago I came across an article titled “Choose Boring Technology”. A few of my friends had shared this on Linkedin and since it was also referenced in some of the mailing lists I am a member of, I felt compelled to write up a response.
+McKinley Paradigm of Boredom In his article, McKinley argues that a software engineer’s “function in a nutshell is to map business problems onto a solution space that involves choices of software” and argues that best tool for the job will inevitably lead to a mess.
+    
+  </p>
+
+  
+    
+      <a class="continue" rel="full-article" href="https://esfand-r.github.io/esfand-r.github.com/posts/dont-choose-boring-technology/">Continue Reading »</a>
+    
+  
+</article>
+
+  
+
+
+  
+
+  
+
+  
+
+  
+    <article class="post">
+  
+    <h2><a rel="full-article" href="https://esfand-r.github.io/esfand-r.github.com/posts/survival-through-language/">survival through language</a></h2>
+  
+
+  <div class="postmeta">Posted on <time datetime="2016-10-18 10:45:51 -0400 EDT" pubdate="">October 18, 2016</time>
+    
+  </div>
+
+  <p>
+    
+      Early in my career I landed on a project that was halfway through the launch. The project had been delayed a few times and higher management was getting increasingly agitated. Our sales team had lined up the ads and delays in an Advertising Based Revenue Model was simply intolerable. Engineering leads saw the salvation in cool technology so everything was cutting-edge. We sure had fun talking about advantages of Solr? Scalability of Cassandra and awesomeness of Zookeeper; too busy to try to fill the communication gap with the business team.
+    
+  </p>
+
+  
+    
+      <a class="continue" rel="full-article" href="https://esfand-r.github.io/esfand-r.github.com/posts/survival-through-language/">Continue Reading »</a>
+    
+  
+</article>
+
+  
+
+
+  
+
+  
+
+  
+
+  
+    <article class="post">
+  
+    <h2><a rel="full-article" href="https://esfand-r.github.io/esfand-r.github.com/posts/breakfast-with-scala/">breakfast with scala</a></h2>
+  
+
+  <div class="postmeta">Posted on <time datetime="2016-10-18 10:32:57 -0400 EDT" pubdate="">October 18, 2016</time>
+    
+  </div>
+
+  <p>
+    
+      Every now and then a beautiful new language emerges and dies quickly lacking marketing and backing of the giants. While it’s very, very sad, learning a new language is not about the next “ big thing&rdquo;. It&rsquo;s about thinking in different ways outside of normal thought patterns.
+This talk was organized not only in an attempt to discuss the importance of this challenge with colleagues, but also to introduce a fairly new jvm language and a paradigm quite different from imperative programming.
+    
+  </p>
+
+  
+    
+      <a class="continue" rel="full-article" href="https://esfand-r.github.io/esfand-r.github.com/posts/breakfast-with-scala/">Continue Reading »</a>
+    
+  
+</article>
+
+  
+
+
 
 <div class="pagination">
-  {% if paginator.previous_page %}
-      {% if paginator.previous_page == 1 %}
-        <a class="btn btn-default" href="{{ site.baseurl}}/index.html" class="previous">Newer</a>
-      {% else %}
-        <a class="btn btn-default" href="{{ site.baseurl}}/page{{ paginator.previous_page }}" class="previous">Newer</a>
-      {% endif %}
-  {% endif %}
-  <span class="page_number ">Page: {{ paginator.page }} of {{ paginator.total_pages }}</span>
-  {% if paginator.next_page %}
-    <a class="btn btn-default" href="{{ site.baseurl}}/page{{ paginator.next_page }}" class="next">Older</a>
-  {% endif %}
+  
+
+  
+
+  
 </div>
+
+
+  </main>
+
+<footer>
+  <div class="footer_text">
+      <div>
+        <h3>Hi, <a href="/about">I'm Esfandiar</a></h3>
+        <p>
+          Here you can place a short bio about yourself. Place a `bio.html` file in your
+project directory under `layout/partials`. That will override this message.
+
+        </p>
+      </div>
+      
+  </div>
+
+  
+    <div class="footer_copyright">
+      &copy; 2017 <a href="/about">Esfandiar Amirrahimi</a>
+       - Made in Montreal, QC
+    </div>
+  
+</footer>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/2.2.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.2.14/js/lightgallery-all.min.js" charset="utf-8"></script>
+    <script src="/js/weblog.js" charset="utf-8"></script>
+    
+
+    <script type="text/javascript">
+
+  
+  $(function() {
+    
+    $.getJSON("https://api.flickr.com/services/feeds/photos_public.gne?id=&format=json&jsoncallback=?", function(data) {
+      iweblog.application.displayImages(data, 8);
+    });
+  });
+
+</script>
+
+    
+  </body>
+</html>
+

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+
+    <title>@esfandiar’s Divine Comedy of a Software Engineer - Microposts</title>
+    <link>https://esfand-r.github.io/esfand-r.github.com/microposts/</link>
+    <description>All entries in Microposts on Divine Comedy of a Software Engineer</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+    <lastBuildDate>Tue, 18 Oct 2016 10:55:31 -0400</lastBuildDate>
+    <atom:link href="/esfand-r.github.com/microposts/" rel="self" type="application/rss+xml" />
+    
+      
+      <item>
+        <title>reactive manifesto in farsi</title>
+        <link>https://esfand-r.github.io/esfand-r.github.com/microposts/reactive-manifesto-in-farsi/</link>
+        <pubDate>Tue, 18 Oct 2016 10:55:31 -0400</pubDate>
+        <author> (Esfandiar Amirrahimi)</author>
+        <guid>https://esfand-r.github.io/esfand-r.github.com/microposts/reactive-manifesto-in-farsi/</guid>
+        <description>&lt;p&gt;&lt;a href=&#34;https://docs.google.com/document/d/1g5MgNG91KUrjVTM0_VA3zgn9aNm7npMbISSUlYKfOro/pub&#34;&gt;Reactive Manifesto in Farsi&lt;/a&gt;&lt;/p&gt;
+</description>
+      </item>
+      
+    
+  </channel>
+</rss>

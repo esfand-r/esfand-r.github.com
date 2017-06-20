@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+
+    <title>@esfandiar’s Divine Comedy of a Software Engineer - Divine Comedy of a Software Engineer</title>
+    <link>https://esfand-r.github.io/esfand-r.github.com/</link>
+    <description>All entries in Divine Comedy of a Software Engineer on Divine Comedy of a Software Engineer</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+    <lastBuildDate>Tue, 18 Oct 2016 10:59:11 -0400</lastBuildDate>
+    <atom:link href="/esfand-r.github.com/" rel="self" type="application/rss+xml" />
+    
+      
+      <item>
+        <title>Binary Coupling</title>
+        <link>https://esfand-r.github.io/esfand-r.github.com/posts/binary-coupling/</link>
+        <pubDate>Tue, 18 Oct 2016 10:59:11 -0400</pubDate>
+        <author> (Esfandiar Amirrahimi)</author>
+        <guid>https://esfand-r.github.io/esfand-r.github.com/posts/binary-coupling/</guid>
+        <description>
+
+&lt;h2 id=&#34;background&#34;&gt;Background&lt;/h2&gt;
+
+&lt;p&gt;So my goal today is to try and give an argument for reducing the amount of shared code and limiting or eliminating the coupling of the systems with binary dependencies. The punchlines of this text are shamelessly plagiarized from the fantastic talk given by Ben Christensen titled &amp;ldquo;Don&amp;rsquo;t Build a Distributed Monolith&amp;rdquo; that can help putting some developers’ personal observations into context.&lt;/p&gt;
+
+&lt;p&gt;The punchline of this argument is about shared libraries and network clients. And we define them for the purpose of this post as :&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Shared libraries: Libraries that are required or libraries of the transitive variety (Buy one and get 20 free type of thing!). They’re often called “the core” or “platform core” or similar names signifying their importance and omnipresence.&lt;/li&gt;
+&lt;li&gt;Network clients: This is referring to the clients without which service is inaccessible or extremely hard to access due to lack of clarity of protocols and contracts.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;distributed-monolith&#34;&gt;Distributed Monolith&lt;/h2&gt;
+
+&lt;p&gt;&amp;ldquo;Distributed Monolith” is born out of a phenomenon within which a monolithic code base is broken up and spread across a network. This is where we lose a few of their benefits and keep almost all the troubles. There is a very thin line between distributed monolith and microservices. There is no Great and Wall of China with armed sentries posted every 20 feet between them. I would like to argue that with too much of sharing we create a field of gravity where all you need is a little push to become the Distributed Monolith.&lt;/p&gt;
+
+&lt;p&gt;We can identify a distributed monolith:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;When it sometimes take months to upgrade a library across a company or days at a smaller scale. I think every developer have felt that pain one way or another, in or out of a monolith, here or there. In this scenario, when upgrade has to happen, a team has to get assigned to up the versions across all the repos and depending on the numbers of repos and complexity this can take from days to months to get that diff safely. This is often followed by a sweaty weekend where the entire company has to be upgraded.&lt;/li&gt;
+&lt;li&gt;When introducing a new language or major foundational tech stack, it takes too long relative to the size and complexity of the code base. When we need to reinvent a lot of wheels and reverse engineer how the base platform works just to get going with another language.&lt;/li&gt;
+&lt;li&gt;When it is the client binary that decides all the details such as opening sockets, using threads or thread pools, allocating memory, doing caching or any of those nice things. Those decisions are now all made by some other intrusive binary which comes into the system and, in our runtime, is making decisions that we cannot control. Extend this to however many client libraries and you get yourself a decision nightmare. A change sometime means having to make decisions with all the consumers of those libraries. The operational complexity is now everyone’s concern instead of the service owner isolating their service implementation.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If these symptoms are occurring, they can be signs of losing some of the coolest benefits of microservice architecture. In many ways, if a system has ended up with any of the above symptoms, it probably should have stayed closer to the monolith anyways, because it is paying all the costs of the distributed systems without some of its clear benefits. Some of those voided benefits are:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Embracing a polyglot universe&lt;/strong&gt;: We don&amp;rsquo;t mean insanity here. It doesn&amp;rsquo;t mean every service written in a different language. And it definitely doesn&amp;rsquo;t mean PHP  :). That is a whole other extreme that is very unlikely to be of any benefit to anybody. It does make sense that there are core technologies that a broad portion of the company is familiar with. Even if it’s just for debugging 3 am on the eve of Saint Jean Baptiste ! We have been there, we have done that. But and the big “BUT” is that over time we might find that there are different services that are served better by different languages or technology stack, or there are different skill sets that we can hire or acquire using acquisitions that will mean $ if they can just integrate with the system following a bunch of protocols and contracts rather than having to learn Spring from scratch.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Organizational and technical decoupling&lt;/strong&gt;: One of the most talked about benefits of microservices is that it enables an organization to grow such that the individual teams and organizations within can evolve technically without coupled collaboration between them. So an individual team adopts a new technology or platform without convincing a central authority. Let&amp;rsquo;s say we had some use cases that would be better served by Actor model, but this coupling ends up in rewriting the entire platform.&lt;/p&gt;
+
+&lt;p&gt;Within a company, typically the pressures of deliverable dates and organizational pressure, and those types of things basically mean that you just go to move forward, and it’s typically not a very easy thing to push back and say, “I don’t agree with what you’re pushing upon us.” And then we get into cross-organizational disputes over timelines and priorities. Imagine we are a consumer and depends on 10 different services with 10 client libraries to use. It&amp;rsquo;s 3 a.m and everything is crashing and burning. Now, all the complexity of the code and the technical decisions of all the bugs are now our problem to operate and debug.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Temporal decoupling&lt;/strong&gt;: Over time the reasons why we make certain tech choices will change or just versions of libraries increase and we want to adopt the newer tech. For example one of the services has adopted Tomcat years ago and it made sense then, but now Netty might be the thing that floats your boat! it&amp;rsquo;s a good test to see if this can be done without upgrading the entire company at once. Another example of temporal coupling is that a service cannot use newest version of awesome library X because some core central platform is transitively holding you to three versions ago.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-overrated-dryness&#34;&gt;The overrated DRYness&lt;/h2&gt;
+
+&lt;p&gt;I was a firm believer that code duplication is peccata mortalia. This is what I had been taught since, hmmm, forever.  A good friend once argued that it’s not always actually the right or the best thing to do and referred me to this the talk  and mentioned a chapter in Sam Newman’s book titled “DRY and the Perils of Code Reuse in a Microservice World”. The thing is DRY is not necessarily the right principle to prioritize in distributed systems and that abstractions are good but those that do not require binary coupling. The evils of too much coupling between services are far worse than that caused by code duplication.&lt;/p&gt;
+
+&lt;p&gt;Shared code, in and of itself, is not problematic when you’re using it inside for your implementation. But as soon as it starts to leak across your network boundaries and across your service boundaries, that’s when it starts to become a problem. If some service want to have a Spring stack that teams can adopt, that’s fine. As long as it’s not preventing me from using also Go or Node.js or whatever in the different places, and that large frameworks like Spring and AKKA are an implementation inside, same with Akka or any other powerful technology. But then I should expose APIs out and not expect my entire company to all be Akka actors because it’s not the right solution everywhere. One of the reasons why we bother with microservice architecture is so that we can avoid coupling the producer from the consumers, so that when one changes the other ones don’t all have to change. And if we favor the DRY principle, we can start to break this very benefit of microservices.&lt;/p&gt;
+
+&lt;p&gt;True technology heterogeneity gets lost with binary coupling. Let’s say Go is the new hotness and I want to go and adopt Go or I want to bring this dude who is really, really awesome and can do good stuff on the Go. In that case if a team feels that it is beneficial enough for us to go and embrace Go, we can actually reimplement the necessary libraries against the protocols and contract to do so. For example for AWS APIs, there are separate teams and the community also who actually generates common libraries that most people end up using. Some of these common tech stacks resemble the platform in a distribute monolith that we mentioned earlier. However these are not formalized as the only way to do something, and that they’re built against protocols and contracts. Here different stacks can exist. You get the benefits of reusing other people’s work, and collaborating together, but you actually still allow the decoupling over time.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;“This happens to be why the internet has been so successful. It’s been able to evolve completely independently. There’s an interesting, though, that happens within a company. Even though we base ourselves off of the internet technologies, because we don’t have that hard decoupling of organizational boundaries and different priorities, we end up often making decisions that end up breaking the very things that made the internet so successful.”&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The first thing that happens when things are getting too DRY is the client library, written by the service team, becomes the only official way to access the service and no other way will work. The consuming team is now at the mercy of the service owner. Whatever the service owner chooses to do, whatever code they choose to put in their client, whatever their deployment cycle is, or whenever they need to fix a bug, the consuming team basically has no choice except to accept what they give. When we have a single official client it’s then very easy for service logic to start to drift into the client because it’s now my only formal way of talking. Despite being useful in narrow context, it is a limiting factor for polyglot adoption as usually the team which own the service is an expert in one (at best, two) languages.&lt;/p&gt;
+
+&lt;p&gt;It always happens that at some point in time we end up reasoning that it is just easier to make a conditional check in the client and here is when all hell breaks loose. All of a sudden, we are starting to actually run a bunch of service code in the client. The entire system is tightly coupled through these formal client libraries that have already made the decision of what the architecture and language and tech stack is, and we have to use them. If we ever adopt anything new, we actually have to figure out what to do with the dozens of clients that are all based upon a decision years ago. Sometimes there can be so much business logic or the particular domain of how something should work that there is no way but to use the exact same technology stack just to be able to use the shared library. More important than that is reduction in the ability to make change in isolation. So if it happens that some business logic is sitting in a shared library, and we have a bug or we need to put new behaviour into it, and that requires someone getting 10 other teams to set a change and then deploy. At this point, it is definitely a distributed monolith we are talking about. Synchronize the deployments of everybody to get change out can get nasty quick.&lt;/p&gt;
+
+&lt;p&gt;But to be fair, there are cases when the shared library might be the only option, for example if it contains some complex algorithm used across many services. Those cases however are rare exceptions rather than rules.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;My goal was to present an argument that looking beyond the short-term ease and avoid binary coupling by looking at leveraging contracts, protocols, and automated tooling around our systems, will enable us to enjoy benefits of microservices and service-oriented architectures. Just like programming languages which have interfaces and APIs, services can hide all their implementation details and expose data contracts and network protocols. So if I’ve got a network protocol in a data contract, all of a sudden I can consume it from any language in any technology. A consumer can iterate over time and change it as they wish, and they have no dependency on the service implementation and so they can evolve independently of each other.&lt;/p&gt;
+
+&lt;p&gt;Sharing is always well intentioned and consistency at binary level is really, really tempting. It is often presented that health is implicit in consistency and that it is inherently a good thing like a rule written on a stone. I always thought about this. Maybe because I always felt i’m too inconsistent. I could never really manage to sleep at the same time every night even when I tried. It always depended on what is interesting enough to keep me awake. I barely ever managed to wear socks that match. So it was always a question for me, people say consistency is good, but why consistency as a word implicitly brings good as a characteristic? Consistency at what level? So let’s say I’m running a restaurant. Do I consistently audit my food and my customers opinion and produce good food or I have chefs that wear same clothing and have the same fake smile but produce crap food consistently? There is an important distinction. Living together of unlike organisms or performing symbiosis is one of the reasons why we survived as a specify beside our intelligence and our viscousness.&lt;/p&gt;
+
+&lt;p&gt;Alvin Toffler in his booked called revolutionary wealth writes:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;“This criterion is based on the assumption that if a fact fits with other facts regarded as true, it too must be true. Detectives, lawyers and courts lean heavily on consistency as the primary test of a witness’s truthfulness. In the world-famous trial of Michael Jackson for child-molestation, millions of TV viewers around the globe were mesmerized for months as each side, prosecution and defense, highlighted discrepancies in the evidence presented by the other. Every bit of evidence was fine-tooth-combed for internal contradictions as though noncontradiction proved truthfulness. In business, too, consistency wins points, even though it is quite possible to be consistently false. When a SWAT team of auditors descends on a firm to perform what is known as “due diligence” in preparation for a merger or acquisition, the first thing it looks for are inconsistencies. Do accounts receivable, reported in the “control ledger,” line up precisely with what the underlying subledgers show? Inconsistencies all raise suspicion that the truth is being massaged. Since the accounting scandals at Enron, WorldCom, Adelphia, Tyco and a host of other high-flying firms, the consistency criterion has been applied with greater consistency.”&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;There are many things like standardized logging, fault injection, distributed tracing, discovery, routing, etc. that are very hard problems that do need solutions. We can’t just say, “Well screw it. We’re not going to have any standardization whatsoever.” . However binary coupling isn&amp;rsquo;t necessarily needed to achieve this and can cause great harm in the long run. Standardization can be achieved via protocols and contracts, maybe with a little bit more effort at the start. There’s a lot of things that we can address. Not all of them, but a lot of them we can address by declaring them in the protocol and in the data contracts of our services, and then allowing independent libraries to evolve that handle all the implementation details of that. We can use auditing rather than binary coupling to ensure standardization. So this is one where things like tracing, we need something that audits a service before it comes in. And so it’s effectively an integration test for a new service. So if I want to bring a new service in, if I’m going to use some common tech stack that most services use, then it’s probably pretty easy to get through that auditing process because everyone’s done it. But if I’m a team who, it’s four years in and I’m trying to do something new and it’s worth me taking a little bit longer to bring on a new tech stack, then there’s an auditing process to actually assert that yes you actually show up properly with distributed tracing. You’re not breaking the flow of the identifiers needed for that. Yes, you’re logging everything off into the right system. No, you’re not putting a huge security hole in our system, those types of things. So a good question would be doesn’t this actually made it harder to bring on a new service? Maybe, because we haven’t explored this kind of approach previously. Netflix has though and their engineers are vocal about it. So why do we actually fail at this so often in our companies? We start out well-intentioned to do this and we fail. We have not explored these approaches yet because we know how to use shared libraries and send them around.&lt;/p&gt;
+
+&lt;p&gt;Delaying of the cost of the decoupling, is actually very, very high. When you push it off down the road, to basically untangle this later, it’s incredibly hard and very expensive. And as I’ve seen efforts to try and do this, just talking about them ends up taking years. Okay? Just talking about how to detangle the mess is years, let alone actually making it happen. We should try to only share a contract and avoid binary. With GraphQL we can generate clients from schemas. GRPC might be the way to go if type really matters. Using Swagger is also perfectly fine if we really want rest.&lt;/p&gt;
+</description>
+      </item>
+      
+    
+      
+      <item>
+        <title>from hilbert with love</title>
+        <link>https://esfand-r.github.io/esfand-r.github.com/posts/from-hilbert-with-love/</link>
+        <pubDate>Tue, 18 Oct 2016 10:59:11 -0400</pubDate>
+        <author> (Esfandiar Amirrahimi)</author>
+        <guid>https://esfand-r.github.io/esfand-r.github.com/posts/from-hilbert-with-love/</guid>
+        <description>
+
+&lt;p&gt;Having taken Functional Programming with Scala presented by Martin Odersky, I have found the idea behind it rather difficult to understand and very amusing at the same time. Coming from an imperative world, everything looks quite bizarre at the moment. In the past few weeks, I kept wondering: What is the reason for this recent comeback of functional programming? May the history of great men who created our universe shed some light on my confusion&amp;hellip;&lt;/p&gt;
+
+&lt;h2 id=&#34;hilbert-s-problems&#34;&gt;Hilbert&amp;rsquo;s Problems&lt;/h2&gt;
+
+&lt;p&gt;Everything started from some abstract math problems. They were presented in the year 1900 at the International Congress of Mathematicians in Paris by the German mathematician David Hilbert. They were problems about mathematics itself rather than problems in mathematics. There were three of those question that had the greatest impact on the lives of software developers as we know it now:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Is mathematics complete? Given a finite set of axioms, can we prove or disprove every mathematical statement?&lt;/li&gt;
+&lt;li&gt;Is mathematics consistent? We should only be able to prove the true statement, right?&lt;/li&gt;
+&lt;li&gt;Is every statement in mathematics decidable? Hilbert wanted to know whether there exists a procedure that can be applied to every statement and tell us about the truth or falsity of that statement in finite time.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;This third question is still known by its German name as the Entscheidungsproblem (“decision problem”). It goes back to the seventeenth-century mathematician Gottfried Leibniz from the Dutch Golden Age (Dutch Republic at the time). The Republic of the Seven United Netherlands was a sanctuary to many brilliant European minds finding peace in one of the most cultured parts of the green continent. Leibniz actually built his own calculating machine, and believed that humans could eventually build a computing machine that could determine the truth or falsity of any mathematical statement.&lt;/p&gt;
+
+&lt;p&gt;To better understand the questions Hilbert posed, we cannot neglect the axiomatic development of geometry. From a small number of axioms can be derived numerous propositions. If we could somehow establish the truth of the axioms, both truth and mutual consistency of the truth are established. Euclidean geometry has had a profound influence in human development. In ethics, Spinoza claims that he wants to treat his subject matter like points, lines and planes with axioms and theorems… and mathematicians and logicians dreamed to do the same with numbers and symbols. The influence of euclidean geometry led many scientists, including Hilbert, to believe that the answer to every question would be “yes”, and to believe that there is no such thing as an unsolvable problem. At the height of this belief, around 1910, Russell and Whitehead, in their Principia Mathematica, tried to write down all mathematics in pure logic. The dream was to come up with a set of axioms and inference rules in symbolic logic and prove all mathematical truths using them. Let it be forever a solid foundation of all mathematics!&lt;/p&gt;
+
+&lt;p&gt;This optimistic dream was a short one though. Very short&amp;hellip;&lt;/p&gt;
+
+&lt;h2 id=&#34;bringing-down-an-empire&#34;&gt;Bringing Down an Empire&lt;/h2&gt;
+
+&lt;p&gt;It was the year 1931 and scientists were rejoicing in their positivism, believing that we are in the beginning of the end and that they had found the truth. Then came a 25 years old Austrian introducing his paper “Über formal unentscheidbare Sätze der &amp;ldquo;Principia Mathematica&amp;rdquo; und verwandter Systeme“ (called in English &amp;ldquo;On Formally Undecidable Propositions of &amp;ldquo;Principia Mathematica&amp;rdquo; and Related Systems&amp;rdquo;), forever changing the world. It even had an impact how we philosophize our very existence.&lt;/p&gt;
+
+&lt;p&gt;The young genius had attacked one of the most important problems in the foundations of mathematics. He managed to perceive Principia Mathematica as numbers rather than symbols. Gödel’s incompleteness theorem stated that if the mathematics is consistent, then it cannot be complete. The reasoning of the proof was so new and brilliant that at the time of its publication only those closely familiar with the difficult technical literature of a very specialized field could even bother to understand it. It’s not easy to imagine how this statements gets translated into mathematics, but Gödel did it with his brilliance. Up to that point, many mathematicians and philosophers strongly believed that Hilbert’s questions would be answered positively. But Gödel shattered their dreams of a perfect structure. It was indeed upsetting for those who wanted to find in mathematics something that was just too perfect.&lt;/p&gt;
+
+&lt;p&gt;Here I just borrow directly from the beautiful preface to the second edition of Gödel’s Proof written by cognitive scientist/wordsmith Douglas R. Hofstadter:&lt;/p&gt;
+
+&lt;p&gt;“In this shockingly bold manner, Gödel stormed the fortress of Principia Mathematica and brought it tumbling down in ruins. He also showed that his method applied to any system whatsoever that tried to accomplish the goals of Principia Mathematica. In effect, then, Gödel destroyed the hopes of those who believed that mathematical thinking is capturable by the rigidity of axiomatic systems, and he thereby forced mathematicians, logicians, and philosophers to explore the mysterious newly found chasm irrevocably separating provability from truth.“&lt;/p&gt;
+
+&lt;p&gt;Gödel lived in fear of being poisened. He became paranoid early in his life after a member of the Vienna Circle, Moritz Schlick, who had attracted Gödel to Logic, was assassinated by a Pro-Nazi student. Later, he would only accept food prepared by his wife, and following his wife’s hospitalization he literally starved himself to death.&lt;/p&gt;
+
+&lt;p&gt;In his glorious life, besides the things he proved or the things he proved that cannot be proved, he showed something else. He proved that depression and fear cannot stop people from doing extraordinary things. What matters is having questions and being excited about them. It all starts with a question and ends with a question. When we run out of questions, we don’t just run out of answers, we run out of life.&lt;/p&gt;
+
+&lt;p&gt;&amp;ldquo;I say unto you: one must still have chaos in oneself to be able to give birth to a dancing star. I say unto you: you still have chaos in yourselves.” ― Friedrich Nietzsche, Towards the Ubermensch, Thus Spoke Zarathustra.&lt;/p&gt;
+
+&lt;p&gt;What is mathematical truth after Gödel? What is truth at all? Maybe we would need more than mathematics to answer these question.&lt;/p&gt;
+
+&lt;figure&gt;
+    &lt;a href=&#34;http://www.math.nus.edu.sg/aslaksen/gem-projects/maa/0203-2-03-Escher/alhambra.gif&#34;&gt;&lt;img src=&#34;http://www.math.nus.edu.sg/aslaksen/gem-projects/maa/0203-2-03-Escher/alhambra.gif&#34; alt=&#34;image&#34;&gt;&lt;/a&gt;
+    &lt;figcaption&gt;
+Alhambra Sketch. “In mathematical quarters, the regular division of the plane has been considered theoretically . . . Does this mean that it is an exclusively mathematical question? In my opinion, it does not. [Mathematicians] have opened the gate leading to an extensive domain, but they have not entered this domain themselves. By their very nature they are more interested in the way in which the gate is opened than in the garden lying behind it.” – M.C. Escher.  &lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;h2 id=&#34;turing-and-the-entscheidungsproblem&#34;&gt;Turing And The Entscheidungsproblem&lt;/h2&gt;
+
+&lt;p&gt;It was a young Brit who was destined to shatter Hilbert’s dreams once and for all. Alan Turing, the son of a British member of the Indian civil service, entered University of Cambridge to study mathematics in 1931. In 1935, Turing was twenty-three years old and studying under the logician Max Newman. Newman introduced him to Gödel’s recent work. When Turing was presented Gödel’s incompleteness theorem he understood it, and he was able to see how to answer the Entscheidungsproblem. The answer was “no” again. Turing’s 1936 paper titled “On Computable Numbers, with an Application to the Entscheidungsproblem” was recommended for publication by the American mathematician-logician Alonzo Church. Turing and Church independently showed that in general this problem has no solution. They proved that no consistent formal system of arithmetic is decidable. This result, along with Gödel’s incompleteness theorems, ended the dream of a system that could end ignorance in mathematics forever. Turing and Church even showed that some purely logical systems, considerably weaker than arithmetic, are undecidable.&lt;/p&gt;
+
+&lt;p&gt;Turing didn’t stop there. Following the intuition of Leibniz and by thinking about a machine capable of computation, a machine that not only could perform arithmetic, but also manipulate symbols in order to prove mathematical statements, he formulated his definition. By thinking about how humans calculate, he sketched a mental design of such a machine, the amazing Turing machine.&lt;/p&gt;
+
+&lt;p&gt;In the summer of 1938 Turing returned from the United States and joined the wartime headquarters of the Government Code and Cypher School at Bletchley Park. Starting from 1939, he and others designed a code-breaking machine known as the Bombe to break German Enigma codes. Turing’s ingenious Bombe kept the Allies supplied with intelligence for the rest of the war. And at the end of the war, he was made an officer of the Order of the British Empire for his code-breaking achievements.&lt;/p&gt;
+
+&lt;p&gt;Turing was hired by National Physical Laboratory, in 1945, to design and develop an electronic computer. His design for the Automatic Computing Engine was the first relatively complete specification of an electronic stored-program, general-purpose digital computer. His design would have had led to faster computers with more memory, but his NPL colleagues thought engineering his design was too difficult to achieve and too costly, so a much simpler computer was built instead. Turing was also the father of modern cognitive science. He hypothesised that in part, the human brain is a digital computing machine. In 1950, Turing proposed what became known as the Turing Test which would decide whether a machine thinks.&lt;/p&gt;
+
+&lt;p&gt;Brits had a strange way of thanking their greatest war hero. In 1952, Turing was arrested and tried for homosexuality. To avoid prison, he accepted treatment of injections of oestrogen for a year, which were intended to neutralise his libido. And Turing&amp;rsquo;s security clearance was withdrawn preventing him to work for GCHQ. He committed suicide with cyanide on 7 June, 1954 and denied his presence from the world at a depressingly young age. He was only 41.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-birth-of-our-world&#34;&gt;The Birth of Our World&lt;/h2&gt;
+
+&lt;p&gt;It’s all about a team, but if you jumble it up, it was all about von Neumann. He brought dreams into reality.&lt;/p&gt;
+
+&lt;p&gt;“All men dream: but not equally. Those who dream by night in the dusty recesses of their minds wake in the day to find that it was vanity: but the dreamers of the day are dangerous men, for they may act their dreams with open eyes, to make it possible.” ― T.E. Lawrence (Lawrence of Arabia), Seven Pillars of Wisdom: A Triumph.&lt;/p&gt;
+
+&lt;p&gt;By his mid-twenties, John von Neumann was one of the most prominent mathematicians of his time. His work is not limited to mathematics, though it was his main discipline and he had influence in every branch. Von Neumann’s ingenuity left influence in quantum theory, automata theory, economics, and even defense planning.&lt;/p&gt;
+
+&lt;p&gt;Von Neumann invented the computer simulating a Universal Turing Machine and computer programming. His sequential device had a calculation unit, finite memory, and limited rate of data transfer in between the two, which is famously known as the &amp;ldquo;von Neumann bottleneck&amp;rdquo;. Not only did he create everything we need to solve real problems such as Fixed-point arithmetic, program flow control, conditional branching and subroutines to name only a few - working closely with manufacturing teams, he also did much of the hardware and materials engineering himself. Everything was done in machine code and he was a big advocate of it. Only later, as ordinary mortals needed easier ways to solve inceasingly complex problems, were high level languages created, which are for the most parts merely a facade of assembly language on von Neumann serial machines.&lt;/p&gt;
+
+&lt;p&gt;Even after 60 years we have failed to be liberated from the von Neumann bottleneck. What von Neumann made of Turing’s blueprint is still in front of every one of us everyday. If he had not died so early, at the age 54, leaving the ordinary world behind, he might have very well seen his efforts toward a parallel computer, based on neuron-like cellular automata, flourish.&lt;/p&gt;
+
+&lt;p&gt;In his 1977 Turing Award lecture, John Warner Backus, an American computer scientist, stepped away from the world he’d helped build and asked, “Can Programming Be Liberated from the von Neumann Style?”. His paper won the prestigious ACM Turing Award. Backus’s paper is now more than 30 years old. Was it an absolute dead end? Did his idea eventually become a part of the reality of programming?&lt;/p&gt;
+
+&lt;h2 id=&#34;history-repeats-itself-neither-as-tragedy-nor-as-farce&#34;&gt;History Repeats Itself, Neither as Tragedy, Nor as Farce&lt;/h2&gt;
+
+&lt;p&gt;One of Alan Turing&amp;rsquo;s professors, Alonso Church, was working on a mathematical model for expressing computations at the same time Turing came up with his Turing Machines. Church had created a system called the Lambda Calculus. He and Turing realized they were indeed equivalent despite their different look. By composing functions, Lambda Calculus builds up computations. In the Church-Turing thesis, they explained that the class of lambda-definable functions whose values can be calculated by repeating substitution correlates with the class of all functions that are computable. Any effectively computable function can be calculated by a universal Turing machine. Lambda Calculus remained in the world of pens and papers, but Turing machines were easier to implement in 1950’s hardware.&lt;/p&gt;
+
+&lt;p&gt;In 1958, the year after von Neumann passed away, John McCarthy invented a mathematical notation called Lisp which was later developed into a programming language by graduate students. Lisp was based on the Lambda calculus and enabled us to express programs much more conveniently than the von Neumann instructions allow. The fact that Lisp is based on the Lambda calculus is the key and separates it from shallow hacks that only provide syntactic sugar for programming on a von Neumann machine. It is a model for writing programs that are extremely expressive and very powerful. Because they don&amp;rsquo;t work by side-effect, functional languages translates easier to parallel machines. Like lisp, Scala is one those languages that encourages functional programming and packs some practical additions to allow us utilize side-effects. Some people strongly believe that side-effects have to be avoided at all costs, but as long we code on von Neumann machines, their use is going to be practical.&lt;/p&gt;
+
+&lt;p&gt;In the end, FP might fade away, who knows. Claims made about FP have been challenged But learning to think in Functional Programming terms today is unlikely to be a waste of time. With respect to business programming, the large datasets grow huge&amp;hellip; Too large for any single machine, no matter how fast it is. This requires a room full of machines, and we end up having the same problem: How do we scale? In the area of distributed computing, the benefits are more concrete already. I think there&amp;rsquo;s also a strong social aspect to it. Though one might say there is a social aspect to everything! Functional programming seems to be gaining ground these days, at least when it comes to programming for the web and as programming for multicore processors becomes more and more common.&lt;/p&gt;
+
+&lt;h2 id=&#34;epilogue&#34;&gt;Epilogue&lt;/h2&gt;
+
+&lt;p&gt;I started with a question about functional programming and ended up in a never-ending emotional journey full of extraordinary people. Our universe came into existence in the image of these great men. Computer Science could have very well been called the Alan-John masterpiece. Now you can imagine how depressive it was for me that in one of the professional courses I attended, after facing the instructor’s questions, no one knew who Alan Turing is. I have tried here to somehow capture the history of functional programming, to better understand the reasons for this recent hype in FP and cure my confusions. However, I’m still dazed and without a very clear answer to that ‘why’! But now I’m a firm believer that to be better at this field, I must start again, from the very beginning. Fun times ahead in the coming year.&lt;/p&gt;
+</description>
+      </item>
+      
+    
+      
+      <item>
+        <title>reactive manifesto in farsi</title>
+        <link>https://esfand-r.github.io/esfand-r.github.com/microposts/reactive-manifesto-in-farsi/</link>
+        <pubDate>Tue, 18 Oct 2016 10:55:31 -0400</pubDate>
+        <author> (Esfandiar Amirrahimi)</author>
+        <guid>https://esfand-r.github.io/esfand-r.github.com/microposts/reactive-manifesto-in-farsi/</guid>
+        <description>&lt;p&gt;&lt;a href=&#34;https://docs.google.com/document/d/1g5MgNG91KUrjVTM0_VA3zgn9aNm7npMbISSUlYKfOro/pub&#34;&gt;Reactive Manifesto in Farsi&lt;/a&gt;&lt;/p&gt;
+</description>
+      </item>
+      
+    
+      
+      <item>
+        <title>paralysis in analysis</title>
+        <link>https://esfand-r.github.io/esfand-r.github.com/posts/paralysis-in-analysis/</link>
+        <pubDate>Tue, 18 Oct 2016 10:50:36 -0400</pubDate>
+        <author> (Esfandiar Amirrahimi)</author>
+        <guid>https://esfand-r.github.io/esfand-r.github.com/posts/paralysis-in-analysis/</guid>
+        <description>&lt;p&gt;After graduating about two years ago, I came to know more about the software industry and read about its all time high focus on processes and metrics as a way to ensure code quality. It is understandable, millions and billions of code has been and is being written. The software industry suffers from a miserable failure rate and there are millions of dollars at stake. Scrum seems to be the winner of the agile method wars. It is the Kool­kid on the block that everybody wants to adopt. So I was really surprised to find it in a list of the Worst Technologies of the Decade. It makes it easier to know you are not the only one suspicious about this rather bizarre aspect of software development.&lt;/p&gt;
+
+&lt;p&gt;I like many of the agile principles. But they are just basic common sense and don’t need a holy textbook or evangelists to support them. Good teams talk to each other. They take unit testing, design documents and code reviews seriously. There are of course strict rules and guidelines governing the ecosystem preventing engineers and teams from doing things their own way. Some evangelists talk about the cross-functional team like it is such a discovery! Isn&amp;rsquo;t it just natural for designers, artists and engineers working together since the early human civilizations? And really, what&amp;rsquo;s up with the silly names and unnecessary regimented timetable?&lt;/p&gt;
+
+&lt;p&gt;There is a thin line here, too much process can turn the filling dish of a creative job into chartered accountancy with a side of prison. Sometimes it will even demoralize the most passionate geek. Unless it somehow becomes truly agile, it will continue drag everybody down into a mess of meetings and metrics­gaming[1]. Too much process makes it very easy to lose common sense and cloud reasoning in the bulk of unimportant details, like paddling hard but getting stuck behind the first wave. Developers can end up spending days generating stories and tasks. They can spend hours on grooming stories before each sprint and hours on tracking time to generate burndown charts for management. If Agile was supposed to be lightweight, then what is this heavy bureaucracy doing in my life? Product backlog, sprint backlog, product burndown chart, sprint burndown chart, daily meeting, retrospective, sprint planning, crap throwing&amp;hellip; is this really necessary? It is more likely to spend time on process, and less on actually coding the applications. My colleague once said the ratio is 80% these days. 80% doing errands and 20% actual coding. 20% of their time they spend coding and there is expectation that they will be good and fast software developers?! Without practice? And the team is expected to have a winning software, but without continuous and opportunistic refactoring and incremental design? They would quickly dig themselves a massive hole of technical debt.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;The Cult of Courses And Seminars&lt;/strong&gt;
+&amp;gt; &amp;ldquo;To all those belauded sages of the academic chairs, wisdom was sleep without dreams: they knew no higher significance of life. Even at present, to be sure, there are some like this preacher of virtue, and not always so honourable: but their time is past. And not much longer do they stand: there they already lie. Blessed are those drowsy ones: for they shall soon nod to sleep.&amp;rdquo; (Nietzsche, The Academic Chair of Virtue, Thus Spoke Zarathustra)&lt;/p&gt;
+
+&lt;p&gt;Knuth once said: &amp;ldquo;If I find too many people adapting the same idea, I probably think they are wrong&amp;rdquo;. Another reason that I have failed to like Scrum is its cult-like approach handing out glossy outlets and diagrams with hand­wavy math, handed out by armies of evangelists who suffer from too much conviction. Could they pimp their seminars anymore? Even if you love Scrum, you can empathize with me on how ridiculously commercial these things are. Scrum Alliance doesn&amp;rsquo;t help its religion-like status with its armies of trainers and preachers issuing certificates demonstrating, as James Shore puts it, the connection of someone&amp;rsquo;s butt to chair during a two days course.&lt;/p&gt;
+
+&lt;p&gt;It is indeed like religion. Developers can always blame the creator of the process for not doing it right. And of course there are always developers who think that if anything goes right it will be thanks to the framework, but if anything is wrong it will be their fault. Hmmm, I wonder where I have seen this phenomenon before!&lt;/p&gt;
+
+&lt;p&gt;Having said all this, I doesn&amp;rsquo;t mean that I preach a Cowboy approach. After all, civilization and its discontents is a much better place to live than in a Jungle. But sometimes following listed practices on blind faith won&amp;rsquo;t work. Standardizing is just so tempting. But there is no solution for all problems. If we cannot adjust to realities and retrospectives, we will be fixing symptoms rather than the disease, creating a big bureaucratic pile of crap similar to the Quebec health system. We must beware of methodologies. All methodologies imply a prescribed approach, a single­minded, fixed set of processes that removes flexibility and rationality. But in software, they’re fundamentally designed for mediocre teams who can’t think for themselves. And I guess that’s great: it’s the key to short­term success. But working on increasingly complex problems, one might try to at least find a solutions that fits its circumstances with its own domain specific language free from silly terminology.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;“Companions, the creator seeks, not corpses, not herds and believers. Fellow creators, the creator seeks ­­ those who write new values on new tablets. Companions, the creator seeks, and fellow harvesters; for everything about him is ripe for the harvest. &amp;hellip; Fellow creators, Zarathustra seeks, fellow harvesters and fellow celebrants: what are herds and shepherds and corpses to him?” (Friedrich Nietzsche, Zarathustra&amp;rsquo;s Prologue, Thus Spoke Zarathustra)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;In my experience, in a complex scene full of unpredictable actors, when the hype of process catches, when the process becomes the focus rather than people, a Cartesian Scene is created to try and reduce a complex system into manageable separate entities.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;Reductionism is the most natural thing in the world to grasp. It&amp;rsquo;s simply the belief that &amp;ldquo;a whole can be understood completely if you understand its parts, and the nature of their &amp;lsquo;sum&amp;rsquo;&amp;rdquo;. No one in her left brain could reject reductionism.&amp;rdquo; (Douglas Hofstadter, Gödel, Escher, Bach: An Eternal Golden Braid)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;However, this method is mute in explaining the complex phenomena closest to our human­-scale concerns. Maybe instead of going back to Descarte, we can look for Spinoza. Sometimes entities are continues substances, never separable. Is it really as easy as the consultant says? I remember one of my teachers said that 80% of projects fail now. Many are using Scrum. In the past also, 80% of projects were failing. He said maybe what it really means that only 20% of software teams are really competent. The only truth in this field is that is that great programmers write great code. But only passionate programmers have the chance to become a good programmer one day, and this only happens by hard practice; writing and making mistakes in presence of great programmers.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;References&lt;/strong&gt;
+1. Process kills developer passion ­ O&amp;rsquo;Reilly Radar. 2013. Process kills developer passion ­ O&amp;rsquo;Reilly Radar. [ONLINE] Available at:&lt;a href=&#34;http://radar.oreilly.com/2011/05/process­kills­developer­passion.html&#34;&gt;http://radar.oreilly.com/2011/05/process­kills­developer­passion.html&lt;/a&gt;. [Accessed 11 July 2013].&lt;/p&gt;
+</description>
+      </item>
+      
+    
+      
+      <item>
+        <title>art of documentation and communication the most talked about and the most forgotten</title>
+        <link>https://esfand-r.github.io/esfand-r.github.com/posts/art-of-documentation-and-communication-the-most-talked-about-and-the-most-forgotten/</link>
+        <pubDate>Tue, 18 Oct 2016 10:49:37 -0400</pubDate>
+        <author> (Esfandiar Amirrahimi)</author>
+        <guid>https://esfand-r.github.io/esfand-r.github.com/posts/art-of-documentation-and-communication-the-most-talked-about-and-the-most-forgotten/</guid>
+        <description>&lt;p&gt;Let’s face the truth, hard-core geeks can often have trouble in communicating their thoughts and ideas. Good software craftsman who can communicate effectively are indeed a rarity. You quickly observe this as soon as you start punching in code at your very first desk right after school. A “battle-worn veteran” such as Oracle’s Eric Lowe has written about this topic over and over.  There is no China Wall between failed and successful projects, there is a thin line which is only defended by effective dissemination of key information amongst engineers. &lt;a href=&#34;https://blogs.oracle.com/elowe/entry/the_role_of_documentation_in&#34;&gt;Eric Lowe writes&lt;/a&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;&amp;ldquo;I&amp;rsquo;ve seen other projects flounder because the members of the team didn&amp;rsquo;t understand or buy-into the mission, major deliverables or objectives weren&amp;rsquo;t clearly defined, team members didn&amp;rsquo;t agree on the requirements, or team members grew differing perceptions of what the final product would look like!&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;The impacts of ineffective written communications within a project often are magnified by conspiring factors such as geographically dispersed teams, rushed schedules (i.e. we don&amp;rsquo;t have the TIME to define WHAT we&amp;rsquo;re going to deliver!), and in extreme cases, recalcitrant team members!&amp;rdquo;&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Nowadays the requirements, and even the high level concepts, are more free to evolve over time as the project evolves. In this kind of project,  it is even more important to keep in mind that the key concepts and requirements need to be thoroughly documented and for the community to agree upon them. Design decisions are the politics of software design and if others don&amp;rsquo;t understand the reasoning behind a decision, they will be more inclined to disagree with the outcome. The first nail in the coffin is when seemingly unimportant details - such as how the requirements were gathered, how the decisions were made, what was before and what happened after - are not recorded. My wife once told me in “nursing documentation” you record the nursing process: Data gathered and what tools used to gather it, the hypothesis you have made based on that data, what intervention you did based on the hypothesis, and what was the measured outcome. But in our field, sadly stories tend to get forgotten and history is lost.&lt;/p&gt;
+
+&lt;p&gt;Documenting early constraints will help a smart team leverage them and overcome them as early as possible. I have seen over and over development teams trying to design-hack around backward compatibility of old crappy library or support protocols that must be dead at this day an age. Die IE8, Die! Sometimes removing support is the best way to solve a problem. Documenting these constraints, if we have a proven documented case that we need them, will help getting rid of them in the future. The details, the assumptions and justifications must be kept safe. It is critical to document the precise reason for why constraints are being kept. It will then be easier for us to reassess once conditions change.&lt;/p&gt;
+
+&lt;p&gt;Cloud is a different beast altogether. Public facing APIs usually get very well documented but internal details get forgotten. But things move fast, a lot faster. I&amp;rsquo;m not referring to inline documentation in this article at all. But I believe it&amp;rsquo;s a good practice to always imagine that all that is offered are a bunch of libraries with no source code. The only possibility here is extending them or their configurations. How could it be described to an engineer who is going to these libraries? I&amp;rsquo;m pretty sure a good tutorial-like story in pages of a coherent book, with a clean, well-documented interface would make any user happy. Sometimes it’s an egg and chicken question. Not enough doc = very busy or too many developers, while very busy people = not enough docs. Strange isn’t it? Somehow it feels like you have to go through &lt;a href=&#34;http://en.wikipedia.org/wiki/Inferno_%28Dante%29#First_Circle_.28Limbo.29&#34;&gt;Limbo&lt;/a&gt;, &lt;a href=&#34;http://en.wikipedia.org/wiki/Inferno_%28Dante%29#Second_Circle_.28Lust.29&#34;&gt;Lust&lt;/a&gt;, &lt;a href=&#34;http://en.wikipedia.org/wiki/Inferno_%28Dante%29#Third_Circle_.28Gluttony.29&#34;&gt;Gluttony&lt;/a&gt;, &lt;a href=&#34;http://en.wikipedia.org/wiki/Inferno_%28Dante%29#Fourth_Circle_.28Greed.29&#34;&gt;Greed&lt;/a&gt;, &lt;a href=&#34;http://en.wikipedia.org/wiki/Inferno_%28Dante%29#Fifth_Circle_.28Anger.29&#34;&gt;Anger&lt;/a&gt;, &lt;a href=&#34;http://en.wikipedia.org/wiki/Inferno_%28Dante%29#Sixth_Circle_.28Heresy.29&#34;&gt;Heresy&lt;/a&gt;, &lt;a href=&#34;http://en.wikipedia.org/wiki/Inferno_%28Dante%29#Seventh_Circle_.28Violence.29&#34;&gt;Violence&lt;/a&gt;, &lt;a href=&#34;http://en.wikipedia.org/wiki/Inferno_%28Dante%29#Eighth_Circle_.28Fraud.29&#34;&gt;Fraud&lt;/a&gt; and &lt;a href=&#34;http://en.wikipedia.org/wiki/Inferno_%28Dante%29#Ninth_Circle_.28Treachery.29&#34;&gt;Treachery&lt;/a&gt; to get it done with all the love and peace it deserves.&lt;/p&gt;
+
+&lt;p&gt;I think a specialized documentation team, having team members embedded in dev teams who cover not only the public facing APIs, but also every internal technical detail, is a tremendously helpful model. Preferably few non-technical individuals amongst them would be helpful to maintain the balance of control between civilian and military. If developers can tell their story to someone with minimal technical knowledge, even helping them get a general idea of how a library can get extended, then we have guaranteed ourselves a smooth path. Of course during this process management should be careful that no animosity rises between docs and devs and make clear it is engineers’ responsibility to produce documentation and help the documentation team to turn it into the final product. And we should be most careful that no one feels obliged to say “Yes, I understand”&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;We all need storytellers, someone who passionately writes our story along the way. &lt;a href=&#34;http://mta.hu/news_and_views/remembering-neumann-44141/&#34;&gt;Budapest in its Golden Years&lt;/a&gt; produced a ridiculous number of amazing intellectuals during a period of exceptional brilliance in the middle of the 20th century. But if you jumble it up, it would all sum up in Von Neumann that tells the story of that time. It was &lt;a href=&#34;https://www.youtube.com/watch?v=ZadCk5VBdRo&#34;&gt;Beckenbauer&amp;rsquo;s Germany&lt;/a&gt; that made history even when they lost to Italy. Some people are just naturally good in telling a story. I believe in the world of software, it’s only Chekhov’s passionate Russian Realism that can honestly and honorably tell a story. Maybe instead of Descartes, we could look for emotional Spinoza, especially when it comes to something like a computer program that is hard on the surface and all too soft at heart. The story has to be told like a book, a solid, well-kept and ever evolving book. It’s only then that we have tamed these computer programs. But&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;&amp;ldquo;…if you tame me, then we shall need each other. To me, you will be unique in all the world. To you, I shall be unique in all the world… if you tame me, it will be as if the sun came to shine on my life. I shall know the sound of a step that will be different from all the others. Other steps send me hurrying back underneath the ground. Yours will call me, like music, out of my burrow.&amp;rdquo;&lt;/em&gt; &lt;a href=&#34;http://en.wikipedia.org/wiki/The_Little_Prince&#34;&gt;[1]&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;It is quite scary though. It makes us reflect.  &lt;em&gt;“When you gaze long into an abyss, the abyss also gazes into you.”&lt;/em&gt; &lt;a href=&#34;http://en.wikiquote.org/wiki/Beyond_Good_and_Evil&#34;&gt;[2]&lt;/a&gt;&lt;/p&gt;
+</description>
+      </item>
+      
+    
+      
+      <item>
+        <title>divided we win</title>
+        <link>https://esfand-r.github.io/esfand-r.github.com/posts/divided-we-win/</link>
+        <pubDate>Tue, 18 Oct 2016 10:48:47 -0400</pubDate>
+        <author> (Esfandiar Amirrahimi)</author>
+        <guid>https://esfand-r.github.io/esfand-r.github.com/posts/divided-we-win/</guid>
+        <description>&lt;p&gt;This is the republished version of the great article written by &lt;a href=&#34;http://aredko.blogspot.com/2015/08/divided-we-win-event-sourcing-cqrs.html&#34;&gt;Andriy Redko&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;In today&amp;rsquo;s post we are going to unveil some very interesting (in my opinion) architecture styles: &lt;a href=&#34;http://martinfowler.com/eaaDev/EventSourcing.html&#34;&gt;event sourcing&lt;/a&gt; and &lt;a href=&#34;http://martinfowler.com/bliki/CQRS.html&#34;&gt;command query responsibility segregation&lt;/a&gt; (&lt;strong&gt;CQRS&lt;/strong&gt;). Essentially, in both of them events are in the heart of the system design and reflect any changes of the state which are happening. It is quite different from the traditional &lt;a href=&#34;https://en.wikipedia.org/wiki/Create,_read,_update_and_delete&#34;&gt;CRUD&lt;/a&gt; architecture where usually only the last known state is kept, with any historical background effectively lost.&lt;/p&gt;
+
+&lt;p&gt;Another appealing option which &lt;a href=&#34;http://martinfowler.com/bliki/CQRS.html&#34;&gt;CQRS&lt;/a&gt; brings on the table is a natural separation of the write model (state modification initiated by commands and resulted in events) and read model (query for, in most case, last know state). It gives you a lot of freedom in picking the right data storage (or storages) for serving a different application use cases and demands. But, as always, there is no free lunch: the price to pay is the increased complexity of the system.&lt;/p&gt;
+
+&lt;p&gt;To keep the post reasonably short, the whole discussion is split into two parts: &lt;strong&gt;Commands and Events&lt;/strong&gt; (this one), and &lt;strong&gt;Queries&lt;/strong&gt; (upcoming). Using very simple model of the &lt;strong&gt;user&lt;/strong&gt; entity as an example, we are going to design the application which uses &lt;a href=&#34;http://martinfowler.com/bliki/CQRS.html&#34;&gt;CQRS&lt;/a&gt; architecture. There are few libraries available on the JVM platform, but the one we are going to use is &lt;a href=&#34;http://akka.io/&#34;&gt;Akka&lt;/a&gt;, more precisely its two recently added components &lt;a href=&#34;http://doc.akka.io/docs/akka/snapshot/scala/persistence.html&#34;&gt;Akka Persistence&lt;/a&gt; and &lt;a href=&#34;http://doc.akka.io/docs/akka-stream-and-http-experimental/current/scala.html&#34;&gt;Akka HTTP&lt;/a&gt;. Please do not worry if &lt;a href=&#34;http://akka.io/&#34;&gt;Akka&lt;/a&gt; is somewhat new to you, the examples are going to be really basic and (hopefully) easy to follow. So let us get started!&lt;/p&gt;
+
+&lt;p&gt;As we mentioned earlier, the changes in our system are happening as the result of a command and may lead to zero or more events. Let us model that by defining two traits:&lt;/p&gt;
+
+&lt;pre class=&#34;brush: java;&#34; name=&#34;code&#34;&gt;trait Event
+trait Command
+&lt;/pre&gt;
+
+&lt;p&gt;In turn, those events may trigger state changes within application entities so let us model that with a generic trait as well:&lt;/p&gt;
+
+&lt;pre class=&#34;brush: java;&#34; name=&#34;code&#34;&gt;trait State[T] {
+  def updateState(event: Event): State[T]
+}
+&lt;/pre&gt;
+
+&lt;p&gt;Quite simple so far. Now, as we are modeling a user, &lt;strong&gt;UserAggregate&lt;/strong&gt; is going to constitute our model and be responsible for applying updates to a particular &lt;strong&gt;User&lt;/strong&gt;, identifiable by its &lt;strong&gt;id&lt;/strong&gt;. Also, every user is going to have an &lt;strong&gt;email&lt;/strong&gt; property which could be changed upon receiving &lt;strong&gt;UserEmailUpdate&lt;/strong&gt; command and could cause &lt;strong&gt;UserEmailUpdated&lt;/strong&gt; event to be created as the result. The following code snippet defines all that in terms of &lt;strong&gt;state&lt;/strong&gt;, &lt;strong&gt;command&lt;/strong&gt; and &lt;strong&gt;event&lt;/strong&gt; within &lt;strong&gt;UserAggregate&lt;/strong&gt; companion object.&lt;/p&gt;
+
+&lt;pre class=&#34;brush: java;&#34; name=&#34;code&#34;&gt;object UserAggregate {
+  case class User(id: String, email: String = &#34;&#34;) extends State[User] {
+    override def updateState(event: Event): State[User] = event match {
+      case UserEmailUpdated(id, email) =&gt; copy(email = email)
+    }
+  }
+
+  case class UserEmailUpdate(email: String) extends Command
+  case class UserEmailUpdated(id: String, email: String) extends Event
+}
+&lt;/pre&gt;
+
+&lt;p&gt;For the readers familiar with &lt;a href=&#34;http://martinfowler.com/bliki/CQRS.html&#34;&gt;CQRS&lt;/a&gt; and &lt;a href=&#34;http://martinfowler.com/eaaDev/EventSourcing.html&#34;&gt;event sourcing&lt;/a&gt;, this example may look very naïve but I think it is good enough for grasping the basics.&lt;/p&gt;
+
+&lt;p&gt;Having our foundational blocks defined, it is a time to look on the most interesting part: accepting commands, transforming them into &lt;strong&gt;persisted&lt;/strong&gt; events and applying the state changes, all of that are responsibilities of &lt;strong&gt;UserAggregate&lt;/strong&gt;. In the context of &lt;a href=&#34;http://martinfowler.com/bliki/CQRS.html&#34;&gt;CQRS&lt;/a&gt; and &lt;a href=&#34;http://martinfowler.com/eaaDev/EventSourcing.html&#34;&gt;event sourcing&lt;/a&gt;, persisting events is a crucial capability of the system. Events are the single source of truth and the state of any single entity could be reconstructed to any point in time by replaying all the events relevant to it. This is a moment were &lt;a href=&#34;http://doc.akka.io/docs/akka/snapshot/scala/persistence.html&#34;&gt;Akka Persistence&lt;/a&gt; is joining the stage.&lt;/p&gt;
+
+&lt;p&gt;To take one step back, &lt;a href=&#34;http://akka.io/&#34;&gt;Akka&lt;/a&gt; is a brilliant library (or even toolkit) to build distributed systems based on &lt;a href=&#34;https://en.wikipedia.org/wiki/Actor_model&#34;&gt;actor model&lt;/a&gt;. On top of that, &lt;a href=&#34;http://doc.akka.io/docs/akka/snapshot/scala/persistence.html&#34;&gt;Akka Persistence&lt;/a&gt; enriches actors with persistence capabilities, letting them to store their messages (or events) in the durable journal. One might say that journal can grow very, very large and replaying all the events to reconstruct the state could take a lot of time. It is a valid point so &lt;a href=&#34;http://doc.akka.io/docs/akka/snapshot/scala/persistence.html&#34;&gt;Akka Persistence&lt;/a&gt; also adds the capability to store persistent snapshots in the durable storage as well. It speeds up the things a lot as only the events happening since the last snapshot should be replayed. By default, &lt;a href=&#34;https://github.com/google/leveldb&#34;&gt;LevelDB&lt;/a&gt; is a durable storage engine used by &lt;a href=&#34;http://doc.akka.io/docs/akka/snapshot/scala/persistence.html&#34;&gt;Akka Persistence&lt;/a&gt; but it is pluggable feature with many alternatives available.&lt;/p&gt;
+
+&lt;p&gt;With that, let us take a look on &lt;strong&gt;UserAggregate&lt;/strong&gt; actor which is going to be responsible for managing a &lt;strong&gt;User&lt;/strong&gt; entity.&lt;/p&gt;
+
+&lt;pre class=&#34;brush: java;&#34; name=&#34;code&#34;&gt;class UserAggregate(id: String) extends PersistentActor with ActorLogging {
+  import UserAggregate._
+
+  override def persistenceId = id
+  var state: State[User] = User(id)
+
+  def updateState(event: Event): Unit = {
+    state = state.updateState(event)
+  }
+
+  val receiveCommand: Receive = {
+    case UserEmailUpdate(email) =&gt; {
+      persist(UserEmailUpdated(id, email)) { event =&gt;
+        updateState(event)
+        sender ! Acknowledged(id)
+      }
+    }
+  }
+
+  override def receiveRecover: Receive = {
+    case event: Event =&gt; updateState(event)
+    case SnapshotOffer(_, snapshot: User) =&gt; state = snapshot
+  }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;So far it is the most complicated part so let us dissect the key pieces. First of all, &lt;strong&gt;UserAggregate&lt;/strong&gt; extends &lt;strong&gt;PersistentActor&lt;/strong&gt;, which adds the persistent capabilities to it. Second, every persistent actor must have an unique &lt;strong&gt;persistenceId&lt;/strong&gt;: it is used as an identifier inside events journal and snapshot storage. And lastly, in contrast to regular &lt;a href=&#34;http://akka.io/&#34;&gt;Akka&lt;/a&gt; actors, persistent actors do have two entry points: &lt;strong&gt;receiveCommand&lt;/strong&gt; to process commands and &lt;strong&gt;receiveRecover&lt;/strong&gt; to replay events.&lt;/p&gt;
+
+&lt;p&gt;Getting back to our example, once the &lt;strong&gt;UserAggregate&lt;/strong&gt; receives &lt;strong&gt;UserEmailUpdate&lt;/strong&gt; command, first of all it persists the &lt;strong&gt;UserEmailUpdated&lt;/strong&gt; event in the journal using &lt;strong&gt;persist(&amp;hellip;)&lt;/strong&gt; call and then updates aggregate&amp;rsquo;s state using &lt;strong&gt;updateState(&amp;hellip;)&lt;/strong&gt; call, replying with acknowledgement to the sender. To see the complete example in action, let us create a simple &lt;a href=&#34;https://en.wikipedia.org/wiki/Representational_state_transfer&#34;&gt;REST&lt;/a&gt; endpoint using another great project from &lt;a href=&#34;http://akka.io/&#34;&gt;Akka&lt;/a&gt;&amp;rsquo;s family, &lt;a href=&#34;http://doc.akka.io/docs/akka-stream-and-http-experimental/current/scala.html&#34;&gt;Akka HTTP&lt;/a&gt;, emerged from terrific &lt;a href=&#34;http://spray.io/&#34;&gt;Spray&lt;/a&gt; framework.&lt;/p&gt;
+
+&lt;p&gt;For now, we are going to define a simple route to handle a &lt;strong&gt;PUT&lt;/strong&gt; request at &lt;strong&gt;/api/v1/users/{id}&lt;/strong&gt; location, where &lt;strong&gt;{id}&lt;/strong&gt; essentially is a placeholder for user identifier. It will accept a single form-encoded parameter &lt;strong&gt;email&lt;/strong&gt; to update user&amp;rsquo;s email address.&lt;/p&gt;
+
+&lt;pre class=&#34;brush: java;&#34; name=&#34;code&#34;&gt;object UserRoute {
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import scala.language.postfixOps
+
+  implicit val system = ActorSystem()
+  implicit val materializer = ActorMaterializer()
+  implicit val timeout: Timeout = 5 seconds
+
+  val route = {
+    logRequestResult(&#34;eventsourcing-example&#34;) {
+      pathPrefix(&#34;api&#34; / &#34;v1&#34; / &#34;users&#34;) {
+        path(LongNumber) { id =&gt;
+          (put &amp; formFields(&#39;email.as[String])) { email =&gt;
+            complete {
+              system
+                .actorSelection(s&#34;user/user-$id&#34;)
+                .resolveOne
+                .recover {
+                  case _: ActorNotFound =&gt;
+                    system.actorOf(Props(new UserAggregate(id.toString)), s&#34;user-$id&#34;)
+                }
+                .map {                 
+                  _ ? UserEmailUpdate(email) map {
+                    case Acknowledged(_) =&gt;
+                      HttpResponse(status = OK, entity = &#34;Email updated: &#34; + email)
+                    case Error(_, message) =&gt;
+                      HttpResponse(status = Conflict, entity = message)
+                  }
+                }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;The only missed piece is the runnable class to plug the handler for this &lt;a href=&#34;https://en.wikipedia.org/wiki/Representational_state_transfer&#34;&gt;REST&lt;/a&gt; endpoint so let us define one, thanks to &lt;a href=&#34;http://doc.akka.io/docs/akka-stream-and-http-experimental/current/scala.html&#34;&gt;Akka HTTP&lt;/a&gt; it is trivial:&lt;/p&gt;
+
+&lt;pre class=&#34;brush: java;&#34; name=&#34;code&#34;&gt;object Boot extends App with DefaultJsonProtocol {
+  Http().bindAndHandle(route, &#34;localhost&#34;, 38080)
+}
+&lt;/pre&gt;
+
+&lt;p&gt;Nothing gives more assurance that the things are really working except an easy and readable test cases, built using &lt;a href=&#34;http://www.scalatest.org/&#34;&gt;ScalaTest&lt;/a&gt; framework complemented by &lt;a href=&#34;http://doc.akka.io/docs/akka-stream-and-http-experimental/current/scala.html&#34;&gt;Akka HTTP TestKit&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre class=&#34;brush: java;&#34; name=&#34;code&#34;&gt;class UserRouteSpec extends FlatSpec
+      with ScalatestRouteTest
+      with Matchers
+      with BeforeAndAfterAll {
+  import com.example.domain.user.UserRoute
+
+  implicit def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
+  &#34;UserRoute&#34; should &#34;return success on email update&#34; in {
+    Put(&#34;http://localhost:38080/api/v1/users/123&#34;, FormData(&#34;email&#34; -&gt;  &#34;a@b.com&#34;)) ~&gt; UserRoute.route ~&gt; check {
+      response.status shouldBe StatusCodes.OK
+      responseAs[String] shouldBe &#34;Email updated: a@b.com&#34;
+    }
+  }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;Lastly, let us run the complete example and use &lt;strong&gt;curl&lt;/strong&gt; from command line to perform a real call to the &lt;a href=&#34;https://en.wikipedia.org/wiki/Representational_state_transfer&#34;&gt;REST&lt;/a&gt; endpoint, forcing all the parts of the application to work together.&lt;/p&gt;
+
+&lt;pre&gt;$ curl -X PUT http://localhost:38080/api/v1/users/123 -d email=a@b.com
+Email updated: a@b.com
+&lt;/pre&gt;
+
+&lt;p&gt;Nice! The results are matching our expectations. Before we finish up with this part, there is one more thing: please notice that when application is restarted, the state will be restored for the users for which aggregates did already exist. Another way to say it using &lt;a href=&#34;http://doc.akka.io/docs/akka/snapshot/scala/persistence.html&#34;&gt;Akka Persistence&lt;/a&gt; specifics, if event journal has events/snapshots associated with actor&amp;rsquo;s &lt;strong&gt;persistenceId&lt;/strong&gt; (here is why it should be unique and permanent), the recovery process takes place by applying more recent snapshot (if any) and replaying events.&lt;/p&gt;
+
+&lt;p&gt;In this post we looked behind the curtain of &lt;a href=&#34;http://martinfowler.com/eaaDev/EventSourcing.html&#34;&gt;event sourcing&lt;/a&gt; and &lt;a href=&#34;http://martinfowler.com/bliki/CQRS.html&#34;&gt;CQRS&lt;/a&gt;, covering only the write (or command) part of the architecture. There are many things to work on like for example, email uniqueness validation, user latest state retrieval, &amp;hellip; which represent the read (or query) flow of the application and are going to be discussed in the consequent blog post. As for now, I hope that &lt;a href=&#34;http://martinfowler.com/eaaDev/EventSourcing.html&#34;&gt;event sourcing&lt;/a&gt; and &lt;a href=&#34;http://martinfowler.com/bliki/CQRS.html&#34;&gt;CQRS&lt;/a&gt; are a bit demystified and might become a part of your future or existing applications.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Final disclaimer:&lt;/strong&gt; &lt;a href=&#34;http://doc.akka.io/docs/akka-stream-and-http-experimental/current/scala.html&#34;&gt;Akka HTTP&lt;/a&gt; is marked as &lt;strong&gt;experimental&lt;/strong&gt; component at the moment (nonetheless the main goals stand still, the API may change slightly) while &lt;a href=&#34;http://doc.akka.io/docs/akka/snapshot/scala/persistence.html&#34;&gt;Akka Persistence&lt;/a&gt; just graduated out of experimental status with recent &lt;a href=&#34;http://akka.io/&#34;&gt;Akka&lt;/a&gt;&amp;rsquo;s &lt;strong&gt;2.4.0-RC1&lt;/strong&gt; release. Please be aware of that.&lt;/p&gt;
+</description>
+      </item>
+      
+    
+      
+      <item>
+        <title>dont choose boring technology</title>
+        <link>https://esfand-r.github.io/esfand-r.github.com/posts/dont-choose-boring-technology/</link>
+        <pubDate>Tue, 18 Oct 2016 10:47:37 -0400</pubDate>
+        <author> (Esfandiar Amirrahimi)</author>
+        <guid>https://esfand-r.github.io/esfand-r.github.com/posts/dont-choose-boring-technology/</guid>
+        <description>
+
+&lt;p&gt;A couple of days ago I came across an article titled &lt;a href=&#34;http://mcfunley.com/choose-boring-technology&#34;&gt;“Choose Boring Technology”&lt;/a&gt;. A few of my friends had shared this on Linkedin and since it was also referenced in some of the mailing lists I am a member of, I felt compelled to write up a response.&lt;/p&gt;
+
+&lt;h2 id=&#34;mckinley-paradigm-of-boredom&#34;&gt;McKinley Paradigm of Boredom&lt;/h2&gt;
+
+&lt;p&gt;In his article, McKinley argues that a software engineer’s “function in a nutshell is to map business problems onto a solution space that involves choices of software” and argues that best tool for the job will inevitably lead to a mess. The thesis makes the assumptions that choosing from very well-known technologies correlates with easier/cheaper maintenance in the future, so we should naturally be biased towards them.&lt;/p&gt;
+
+&lt;p&gt;McKinley offers a sort of answer to the ‘best tool for the job’ approach, by substituting global tool optimization, conceptualized as choosing the single stack which least poorly addresses the whole of the business’s global processes. Another implicit presumption in his article is that classic technologies are more likely to perform across the breadth of processes demanded by the business’s project(s) globally.&lt;/p&gt;
+
+&lt;p&gt;Further on, the article talks about boredom as something to be embraced - which I have a feeling comes from facing a rebellious team who is struggling to have fun with the current stack.&lt;/p&gt;
+
+&lt;h2 id=&#34;boredom-polyglotism-and-the-best-tool-for-the-job&#34;&gt;Boredom, Polyglotism And “The Best Tool For The Job”&lt;/h2&gt;
+
+&lt;p&gt;Before I start my rant I have to say I cannot go so far as categorizing any of the good old relational database system as boring, or as far as calling simple usage of MongoDB, Redis or any industry-proven nosql db as innovation. No technology is boring, except PHP!  The best reason to cherish &amp;ldquo;best tool for the job&amp;rdquo; thinking is, at the very least, it gives some brain stimulation and some fun conversations. During which you might very-well reach a new found love of Postgres seeing how it perfectly fits in the puzzle. You will then embrace your current stack and ‘unboringify’ the technologies you already use. It’s only through consideration of different technologies that you might correctly evaluate your long-term costs of keeping a system working reliably. A meaningful “Best Tool For The Job” argument looks into the bigger picture and always considers all the costs: Not only it includes costs of operation, training and any extra baggage, but also, it considers the human costs where boredom is going to cost you dearly. It never assumes anything beforehand. It cannot presume old and very well-tested reduces the cost of operation without a solid argument. This would create that sense of boredom, and it will increase the human cost. And it can’t be taken as a given that, as your business grows, these classics will age well, better than the currently younger and lest tested choices. What proves that they will fit better with other ecosystems and expertise of available personnel?&lt;/p&gt;
+
+&lt;p&gt;The human mind is not meant to embrace boredom. The weight of depression and stagnancy it brings upon will crush you to death. &amp;ldquo;Boring&amp;rdquo; should be conflated with &amp;ldquo;bad.&amp;rdquo; Java, MySql or any other good technology should not be conflated with “Boring”. Boring happens only when we close our mind to ‘the new’ with a dogmatic view of working traditions. Being one-sided is a bad thing. For people to not embrace their experimental and innovative mindset is a very risky thing. It’s might pay off better in the long term to go for “the desirable middle between two extremes, one of excess and the other of deficiency.”&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;“Your hand opens and closes, opens and closes. If it were always a fist or always stretched open, you would be paralysed. Your deepest presence is in every small contracting and expanding, the two as beautifully balanced and coordinated as birds&amp;rsquo; wings.” Rumi, The Essential Rumi&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;McKinley goes on, saying “Polyglot programming is sold with the promise that letting developers choose their own tools with complete freedom will make them more effective at solving problems.” This way of defining polyglotism is naive at best and motivated reasoning at worst. There is nothing inherently wrong or right about polyglotism. The very basic idea is only to harness the power of multiple languages in their respective areas of strength. There are many successful companies that embrace polyglot world, Google being one. I don’t believe thinking software is capturable by the rigidity of axiomatic systems as presented in McKinley’s Paradigm of Boredom. It all depends on time, space and problem at hand!&lt;/p&gt;
+
+&lt;p&gt;Normal problem solvig is as described in McKinley Paradigm of Boredom; you stay in the paradigm and follow the traditional methods of solving problems. There is nothing to back the claim up that this is a formula for success. These very methods, now called mature, did not appear out of nowhere. Someone, somewhere was being a clever cowboy and decided to try things differently. Industry is full of those examples. This is where revolutionary science comes in. Of course a lof of these innovations - like any innovation - can fail miserably. But if it wasn&amp;rsquo;t for all the failures we would never have the successes that change us and got us to the technologies we use now.  Some worlds are meant to be chaotic. Imperfect.&lt;/p&gt;
+</description>
+      </item>
+      
+    
+      
+      <item>
+        <title>survival through language</title>
+        <link>https://esfand-r.github.io/esfand-r.github.com/posts/survival-through-language/</link>
+        <pubDate>Tue, 18 Oct 2016 10:45:51 -0400</pubDate>
+        <author> (Esfandiar Amirrahimi)</author>
+        <guid>https://esfand-r.github.io/esfand-r.github.com/posts/survival-through-language/</guid>
+        <description>&lt;p&gt;Early in my career I landed on a project that was halfway through the launch. The project had been delayed a few times and higher management was getting increasingly agitated. Our sales team had lined up the ads and delays in an Advertising Based Revenue Model was simply intolerable. Engineering leads saw the salvation in cool technology so everything was cutting-edge. We sure had fun talking about advantages of Solr? Scalability of Cassandra and awesomeness of Zookeeper; too busy to try to fill the communication gap with the business team. When the problem is too complex it’s easy to fall into the idea that the solution is equally complex. During Napoleon&amp;rsquo;s invasion of Russia, &lt;a href=&#34;https://www.google.com/url?q=https://en.wikipedia.org/wiki/Mikhail_Kutuzov&amp;amp;sa=D&amp;amp;usg=AFQjCNEJjmk7mWm_MQnNBuzuZRjy8X8ezw&#34;&gt;Marshal Mikhail Kutuzov&lt;/a&gt; pretended to sleep throughout the battle planning session, as he feared that Alexander would blame him for the inevitable defeat against Napoleon. When everyone was presenting their attack strategy; he had a solution: burn down Moscow before retreating east of the city. Some believe that a decision arguably saving Russia was only taken because of Kutuzov&amp;rsquo;s impaired decision-making, caused by a bullet destroying his frontal lobe! Maybe that’s what we had to do, forget about Moscow and remember that home is much more than a bunch of buildings.&lt;/p&gt;
+
+&lt;p&gt;Delays in the project had not stopped the initial requirements from evolving; every day a new set of integrations had to be done with the outside world. Even the business owner at the time didn’t know what the system was capable of and this stage was reached even before the project was launched. The conversations between business and engineering teams would take hours at times just because two hours into the discussion they would realize that when they talk about ‘Order’, they are talking about completely different things. A business process emerges wherever human and machine work are combined to produce value. We desperately strive for harmony and understanding between both tech and non-tech people. In his fantastic book on domain specific languages called &lt;a href=&#34;https://www.google.com/url?q=https://manning-content.s3.amazonaws.com/download/4/b4642ea-a269-4168-b43f-a8a90d8c0593/sample_Ch01_DSLsIAfm.pdf&amp;amp;sa=D&amp;amp;usg=AFQjCNFbmFaaueh11VB3wUzjH-5TnF5k0Q&#34;&gt;DSL in Action&lt;/a&gt;, &lt;a href=&#34;https://www.google.com/url?q=http://debasishg.blogspot.ca/&amp;amp;sa=D&amp;amp;usg=AFQjCNHIjOK1wInsFux-98V7fXZC0mj3jg&#34;&gt;Debasish Gosh&lt;/a&gt; writes: &lt;em&gt;“Creating a common vocabulary might take more time up-front than you’re initially willing to spend, but I can almost guarantee that you’ll save yourself a lot of redoing in the long run.”&lt;/em&gt; Thinking back, it amazes me how much energy was spent fighting over framework and technology features rather than discussing inherent and obvious characteristics of a language that could be leveraged in creating a domain specific language (DSL) that could in turn be used to finally enable our engineering, QA, documentation and business teams to perform in symbiosis.&lt;/p&gt;
+
+&lt;p&gt;Yeah, it’s difficult and expensive to build enough vocabulary, let alone watching a language and a beautiful story emerge out of that. When a language is powerful enough, it’s easier to dream about abstractions. These abstractions become building blocks of the stories we tell each other. A language and the ability to convey complex messages could arguably be one of the most important reasons why we have survived as a successful species. Pack animals are weak alone and as a matter of fact, Homo sapiens sapiens, ‘wisest of the wise’, are the weakest of all. A big headed slow creature with no claws; imagine what our ancestors went through to reproduce enough offspring to satisfy their immortal genes. Out of a population of billions, only a few can survive in nature, but those also seem not to be able to survive without their camera. Yes hippie, you have to face the fact one day that you have never been and will never be one with nature. We neither have the immunity of a bacterium to survive in extreme conditions nor the ferocity or strength to fight like a lion. We have survived many odds. It’s unbelievable. But that is not the point of the discussion; I haven’t done any particular research in the area, I do believe however that we have survived thanks to our language and communication skills. And we survived longer when we told a universally pleasant story with them.&lt;/p&gt;
+
+&lt;p&gt;Sailing smoothly from business ideas to technological products requires us to build a Tower of Babel made of all the natural languages that have arisen within disparate practices and cultures - engineering and business teams. The good thing about trying to think of a DSL is that we try to reshape those simple elements of language that seem to have a logical, natural definition for each group, when those definitions don’t match. But I know, building common vocabulary and eventually a language, is costly and more difficult than it sounds. And to make matters even more complicated, a beautiful story is not just created by a talented team; It is emerged out of a culture which is shaped by a much, much more complex landscape.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;I turned silences and nights into words. What was unutterable, I wrote down. I made the whirling world stand still.
+&lt;a href=&#34;https://www.google.com/url?q=https://books.google.ca/books?id%3Dcu1KCAAAQBAJ%26pg%3DPT27%26lpg%3DPT27%26dq%3DI%2Bturned%2Bsilences%2Band%2Bnights%2Binto%2Bwords.%2BWhat%2Bwas%2Bunutterable,%2BI%2Bwrote%2Bdown.%2BI%2Bmade%2Bthe%2Bwhirling%2Bworld%2Bstand%2Bstill%26source%3Dbl%26ots%3D13VEIOsUHc%26sig%3D-sqirZAoMZvSoQgVk83VmO_Agyk%26hl%3Den%26sa%3DX%26ved%3D0CDgQ6AEwBWoVChMIuZ76pOnoxwIVChuSCh2irwbO%23v%3Donepage%26q%3DI%2520turned%2520silences%2520and%2520nights%2520into%2520words.%2520What%2520was%2520unutterable%252C%2520I%2520wrote%2520down.%2520I%2520made%2520the%2520whirling%2520world%2520stand%2520still%26f%3Dfalse&amp;amp;sa=D&amp;amp;usg=AFQjCNFP-EulvM5oZIpGwhd_Cymh1FAiSQ&#34;&gt;Arhur Rimbaud, A Season in Hell&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+      </item>
+      
+    
+      
+      <item>
+        <title>breakfast with scala</title>
+        <link>https://esfand-r.github.io/esfand-r.github.com/posts/breakfast-with-scala/</link>
+        <pubDate>Tue, 18 Oct 2016 10:32:57 -0400</pubDate>
+        <author> (Esfandiar Amirrahimi)</author>
+        <guid>https://esfand-r.github.io/esfand-r.github.com/posts/breakfast-with-scala/</guid>
+        <description>&lt;p&gt;Every now and then a beautiful new language emerges and dies quickly lacking marketing and backing of the giants. While it’s very, very sad, learning a new language is not about the next “ big thing&amp;rdquo;. It&amp;rsquo;s about thinking in different ways outside of normal thought patterns.&lt;/p&gt;
+
+&lt;p&gt;This talk was organized not only in an attempt to discuss the importance of this challenge with colleagues, but also to introduce a fairly new jvm language and a paradigm quite different from imperative programming.&lt;/p&gt;
+
+&lt;p&gt;There is an inherent beauty in a polyglot world.  It leads to chaos. Tame it and it will breathe creativity!&lt;/p&gt;
+
+&lt;p&gt;“if you tame me, it will be as if the sun came to shine on my life. I shall know the sound of a step that will be different from all the others. Other steps send me hurrying back underneath the ground. Yours will call me, like music, out of my burrow” -St-Exupéry, The Little Prince&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://wiki.hybris.com/display/~esfandiar.amirrahimi@hybris.com/2014/04/04/Breakfast+With+Scala&#34;&gt;Link to video&lt;/a&gt;&lt;/p&gt;
+</description>
+      </item>
+      
+    
+  </channel>
+</rss>
