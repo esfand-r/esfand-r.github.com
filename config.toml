@@ -1,0 +1,43 @@
+baseurl = "https://esfand-r.github.io/esfand-r.github.com/"
+title = "Blog"
+languageCode = "en-us"
+theme = "internet-weblog"
+SectionPagesMenu = "main"
+Paginate = 10
+pygmentsstyle = "emacs"
+
+[params]
+	Description = "This is my blog, read it and I hope you enjoy it."
+	ShowCopyright = true
+	RSSEnabled = true
+	RSSSections = [ "Posts", "Microposts", "Photos" ]
+
+[taxonomies]
+  	tag = "tags"
+  	category = "categories"
+  	series = "series"
+
+[author]
+    Handle = "Esfandiar"
+    FirstName = "Esfandiar"
+    LastName = "Amirrahimi"
+    AboutPage = "<The relative or complete link to your about page>"
+    Location = "Montreal"
+
+[[menu.main]]
+      name = "Posts"
+      weight = 1
+    	identifier = "posts"
+      url = "/posts/"
+
+[[menu.main]]
+    	name = "Microposts"
+    	weight = 2
+    	identifier = "microposts"
+    	url = "/microposts/"
+
+[[menu.main]]
+    	name = "Photos"
+    	weight = 3
+    	identifier = "photos"
+    	url = "/photos/"
